@@ -1,11 +1,19 @@
 const express = require("express")
-const {sequelize} = require("./db/models")
+const {sequelize} = require("./db/models") //const db = require('./db/models');
 
 const app = express()
 
 const PORT = process.env.PORT || 3001
 
 app.use(express.json())
+
+//rutas:
+//app.use("/user", userRoute);
+//app.use("/post", postRoute);
+//app.use("/image", imgRoute);
+//app.use("/comment", commentRoute);
+//app.use("/tag", tagRoute)
+
 
 app.listen(PORT, async(error) => {
     if(error) {
