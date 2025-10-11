@@ -1,6 +1,13 @@
 const {User} = require('../db/models');
 
-const getUsers = async (req,res) => {
+
+const getUsers = async(req, res) => {
+  const data = await User.findAll({})
+  res.status(200).json(data)
+}
+
+
+const getUserById = async (req,res) => {
     const data = await User.findOne({where:{id:req.params.id}});
     res.status(200).json(data);
 };
@@ -83,4 +90,4 @@ const followUser = async (req, res)=>{
 
 
 
-module.exports = {getUsers, createUser, updateNickName, updateEmail, deleteUser,followUser};
+module.exports = {getUsers, getUserById, createUser, updateNickName, updateEmail, deleteUser,followUser};
