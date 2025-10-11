@@ -7,7 +7,7 @@ const getUsers = async (req,res) => {
 
 const createUser = async (req, res) => {
     try {
-    //HJACER UN MIDLEWARE QUE NO USE UN MAIL O UN NICK USADO YA
+    
       const newUser = await User.create(req.body);
       res.status(201).json(newUser);
     } catch (e) {
@@ -27,7 +27,7 @@ const updateNickName = async (req, res) =>{
                 id: idABuscar,
               },
             });
-        res.status(201).json({message: "user modificado con exito"});
+        res.status(201).json({message: "usuario modificado con exito"});
       } catch (e) {
         
         res.status(400).json({ error: e });
@@ -39,7 +39,7 @@ const updateEmail = async (req, res) =>{
         const idABuscar = await req.params.id
         
         const newUser = await User.update(
-            //HACER UN MIDLEWARE DE QUE NO QUIERA PONER UN NICK REPETIDO
+            
             { email: req.body.email },
             {
               where: {
@@ -57,14 +57,14 @@ const deleteUser = async (req, res) =>{
         const idABuscar = await req.params.id
         
         const newUser = await User.destroy(
-            //HACER UN MIDLEWARE DE QUE NO QUIERA PONER UN NICK REPETIDO
+            
             {where: {
                 id: idABuscar,
               },
             });
             
             
-        res.status(201).json({message: "User eliminado con exito"});
+        res.status(201).json({message: "Usuario eliminado con exito"});
       
 }
 

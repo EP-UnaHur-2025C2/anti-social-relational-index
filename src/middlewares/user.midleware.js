@@ -61,4 +61,4 @@ const validationEmailSchema = (schema) =>{
 
 
 
-module.exports = {validUser,validNickname, validEmail ,validationSchemma, validationEmailSchema}    
+module.exports = {validUser,validNickname, validEmail ,validationSchemma, validationEmailSchema};   

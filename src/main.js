@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3001
 app.use(express.json())
 
 //rutas:
-//app.use("/user", userRoute);
+app.use("/user", userRoute);
 //app.use("/post", postRoute);
 //app.use("/image", imgRoute);
 //app.use("/comment", commentRoute);
