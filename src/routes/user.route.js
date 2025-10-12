@@ -1,8 +1,8 @@
 const {Router} = require('express');
 const router = Router();
-const {userControllers} = require('../controllers');
+const userControllers = require('../controllers/user.controllers');
 const {validUser, validNickname,validEmail , validationSchemma, validationEmailSchema} = require ('../middlewares/user.midleware')
-const {invalidId} = require ('../middlewares/generic.midleware');
+const {invalidId} = require ('../middlewares/generic.middleware');
 
 
 
