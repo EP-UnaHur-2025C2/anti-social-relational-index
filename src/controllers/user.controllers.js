@@ -8,71 +8,31 @@ const getUsers = async(req, res) => {
 
 
 const getUserById = async (req,res) => {
-    const data = await Usuario.findByPk(req.params.id);
-    res.status(200).json(data);
+  const data = await Usuario.findByPk(req.params.id);
+  res.status(200).json(data);
 };
 
 const createUser = async (req, res) => {
-    try {
-    
-      const newUser = await Usuario.create(req.body);
-      res.status(201).json(newUser);
-    } catch (e) {
-      res.status(400).json({ error: e });
-    }
-  };
+  const data = req.body
+  const newUser = await Usuario.create(data)
+  res.status(201).json(newUser)
+};
 
-const updateUsername = async (req, res) =>{
-    try {
-        const idABuscar = await req.params.id
-        
-        const newUser = await Usuario.update(
-            
-            { username: req.body.username },
-            {
-              where: {
-                id: idABuscar,
-              },
-            });
-        res.status(201).json({message: "usuario modificado con exito"});
-      } catch (e) {
-        
-        res.status(400).json({ error: e });
-      }
+const updateUser = async (req, res) =>{
+  const id = req.params.id
+  const data = req.body
+  const user = await Usuario.findByPk(id)
+  await user.update(data)
+  res.status(200).json(user)
 }
 
-const updateEmail = async (req, res) =>{
-    try {
-        const idABuscar = await req.params.id
-        
-        const newUser = await Usuario.update(
-            
-            { email: req.body.email },
-            {
-              where: {
-                id: idABuscar,
-              },
-            });
-        res.status(201).json({message: "email modificado con exito"});
-      } catch (e) {
-        
-        res.status(400).json({ error: e });
-      }
-}
 
 const deleteUser = async (req, res) =>{
-        const idABuscar = await req.params.id
-        
-        const newUser = await Usuario.destroy(
-            
-            {where: {
-                id: idABuscar,
-              },
-            });
-            
-            
-        res.status(200).json({message: "Usuario eliminado con exito"});
+  const id = await req.params.id
+  const user = await Usuario.findByPk(id)
+  const removed = await user.destroy()    
       
+  res.status(200).json(removed); //lo que eliminó. O: res.status(204).send() y no muestra nada
 }
 
 // get --> /:id/posts
@@ -94,7 +54,7 @@ const getPostsByUser = async(req, res) => {
 const getCommentsByUser = async(req, res) => {
   const id = req.params.id
   const comments = await Comentario.findAll({
-    where: {usuarioId: id},
+    where: {usuarioId: id, visible: true}, //solo muestra los visibles
     include: {model: Post, as: "post", attributes: ["id", "texto"]},
     order: [["createdAt", "DESC" ]]
   })
@@ -124,20 +84,18 @@ const unfollowUser = async(req, res) => {
 
 const getSeguidos = async(req, res) => {
   const id = req.params.id
-  const user = await Usuario.findByPk(id, {
-    include: {model: Usuario, as: "seguidos", attributes: ["id", "username"]}
-  })
+  const user = await Usuario.findByPk(id)
+  const seguidos = await user.getSeguidos({attributes: ["id", "username"]})
 
-  res.status(200).json(user.seguidos)
+  res.status(200).json(seguidos)
 } 
 
 const getSeguidores = async(req, res) => {
   const id = req.params.id
-  const user = await Usuario.findByPk(id, {
-    include: {model: Usuario, as: "seguidores", attributes: ["id", "username"]}
-  })
+  const user = await Usuario.findByPk(id)
+  const seguidores = await user.getSeguidores({attributes: ["id", "username"]})
 
-  res.status(200).json(user.seguidores)
+  res.status(200).json(seguidores)
 }
 
 
@@ -145,8 +103,7 @@ const getSeguidores = async(req, res) => {
 module.exports = {getUsers, 
   getUserById, 
   createUser, 
-  updateUsername, 
-  updateEmail, 
+  updateUser, 
   deleteUser,
   getPostsByUser,
   getCommentsByUser,

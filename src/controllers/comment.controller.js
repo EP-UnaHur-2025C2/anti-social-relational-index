@@ -2,6 +2,13 @@ const {Comentario, Usuario} = require("../db/models")
 
 //app.use("/comment")
 
+//get --> /
+//dejar???
+const getComments = async(req, res) => { //muestra todos los comentarios (visibles o no)
+    const data = await Comentario.findAll({})
+    res.status(200).json(data)
+}
+
 //get --> /:id
 const getCommentById = async(req, res) => {
     const id = req.params.id
@@ -36,4 +43,8 @@ const deleteComment = async(req, res) => {
     res.status(200).json(removed) //lo que eliminó. O: res.status(204).send() y no muestra nada
 }
 
-module.exports = {getCommentById, createComment, updateComment, deleteComment}
+module.exports = {getComments, 
+    getCommentById, 
+    createComment, 
+    updateComment, 
+    deleteComment}

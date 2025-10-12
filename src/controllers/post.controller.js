@@ -70,6 +70,10 @@ const deletePost = async(req, res) => {
     res.status(200).json(removed) //lo que eliminó. O: res.status(204).send() y no muestra nada
 }
 
+
+
+
+
 // put -->/:id/imgs (o post)
 // ver que onda con la URL porque es unique --> findOrCreate para que no haya duplicados?
 const addNewImageToPost = async(req, res) => {
@@ -108,6 +112,10 @@ const deleteImageFromPost = async(req, res) => {
     const removed = await image.destroy()
     res.status(200).json(removed) //lo que eliminó. O: res.status(204).send() y no muestra nada
 }
+
+
+
+
 
 //put --> /:id/tags/:idTag (o post)
 const addTagToPost = async(req, res) => {
@@ -160,6 +168,10 @@ const getPostsByTag = async(req, res) => {
     res.status(200).json(posts)
 }
 
+
+
+
+
 // get --> /:id/comments
 const getCommentsByPost = async(req, res) => {
     const id = req.params.id
@@ -178,6 +190,63 @@ const getCommentsByPost = async(req, res) => {
 
 
 
+
+// get --> /:id/feed
+const getPostsOfFollowedUsers = async(req, res) => {
+    const id = req.params.id
+    const user = await Usuario.findByPk(id)
+
+    const seguidos = await user.getSeguidos({attributes: ["id"]})
+    const idSeguidos = seguidos.map(u => u.id)
+
+    const posts = await Post.findAll({
+        where: {usuarioId: {[Op.in]: idSeguidos}},
+        include: [
+            {model: Usuario, as: "usuario", attributes: ["id", "username"]},
+            {model: PostImagen, as: "imagenes"},
+            {model: Tag, as:"tags"},
+            {
+                model: Comentario, 
+                as: "comentarios",
+                where: {visible: true},
+                required: false,
+                include: {model: Usuario, as: "usuario", attributes: ["id", "username"]}
+            }
+        ],
+        order: [["createdAt", "DESC"]]
+    })
+    res.status(200).json(posts)
+}
+
+
+
+
+
+const findOrCreateImages = async(imagenes) => {
+    const promesas = []
+    imagenes.forEach(img => {
+        promesas.push(PostImagen.findOrCreate({
+            where: {url: {[Op.eq]: img.url}},
+            defaults: img
+        }))
+    })
+    const result = await Promise.all(promesas)
+    return result.map(([img, creada]) => img)
+}
+
+const findOrCreateTags = async(tags) => {
+    const promesas = []
+    tags.forEach(tag => {
+        promesas.push(Tag.findOrCreate({
+            where: {nombre: {[Op.eq]: tag.nombre}},
+            defaults: tag
+        }))
+    })
+    const result = await Promise.all(promesas)
+    return result.map(([tag, creado]) => tag)
+}
+
+
 // codigo repetido --> ver
 
 //post --> /create-image
@@ -188,19 +257,9 @@ const createPostWithImages = async(req, res) => {
         texto: data.texto, 
         userId: data.userId})
 
+    const imgs = await findOrCreateImages(data.imagenes)
 
-    const promesas = []
-    data.imagenes.forEach((img) => {
-        promesas.push(PostImagen.findOrCreate({
-            where: {url: {[Op.eq]: img.url}},
-            defaults: img
-        }))
-    })
-
-    const result = await Promise.all(promesas)
-    const imgs = result.map(([img, creada]) => img)
-
-    await newPost.addPostImages(imgs)
+    await newPost.addImagenes(imgs)
 
     const postWithImages = await Post.findByPk(newPost.id, {
         include: {model: PostImagen, as: "imagenes"}
@@ -217,16 +276,7 @@ const createPostWithTags = async(req, res) => {
         texto: data.texto, 
         userId: data.userId})
     
-    const promesas = []
-    data.tags.forEach((tag) => {
-        promesas.push(Tag.findOrCreate({
-            where: {nombre: {[Op.eq]: tag.nombre}},
-            defaults: tag
-        }))
-    })
-
-    const result = await Promise.all(promesas)
-    const tags = result.map(([tag, creado]) => tag)
+    const tags = await findOrCreateTags(data.tags)
 
     await newPost.addTags(tags)
 
@@ -244,24 +294,10 @@ const createPostCompleto = async(req, res) => {
         texto: data.texto, 
         userId: data.userId})
     
-    const promesasImgs = []
-    data.imagenes.forEach((img) => {
-        promesasImgs.push(PostImagen.findOrCreate({
-            where: {url: {[Op.eq]: img.url}},
-            defaults: img
-        }))
-    })
-    await Promise.all(promesasImgs)
+    const imgs = await findOrCreateImages(data.imagenes)
+    const tags = await findOrCreateTags(data.tags)
 
-    const promesasTags = []
-    data.tags.forEach((tag) => {
-        promesasTags.push(Tag.findOrCreate({
-            where: {nombre: {[Op.eq]: tag.nombre}},
-            defaults: tag
-        }))
-    })
-    const result = await Promise.all(promesasTags)
-    const tags = result.map(([tag, creado]) => tag)
+    await newPost.addImagenes(imgs)
     await newPost.addTags(tags)
 
     const postCompleto = await Post.findByPk(newPost.id, {
@@ -286,6 +322,7 @@ module.exports = {getPosts,
     deleteTagFromPost,
     getPostsByTag,
     getCommentsByPost,
+    getPostsOfFollowedUsers,
     createPostWithImages,
     createPostWithTags,
     createPostCompleto}
