@@ -1,21 +1,46 @@
-const { where } = require("sequelize")
-const {Post, PostImages, Tag, Comment, User} = require("../db/models")
+const { where, or } = require("sequelize")
+const {Post, PostImagen, Tag, Comentario, Usuario} = require("../db/models")
 const { Op } = require("sequelize")
 
 // try / catch ; ver middlewares
 
 //app.use("/post")
 
+const includePostCompleto = [
+    {model: Usuario, as: "usuario", attributes: ["id", "username"]},
+    {model: PostImagen, as:"imagenes"},
+    {model: Tag, as: "tags"},
+    {
+        model: Comentario,
+        as: "comentarios",
+        include: {model: Usuario, as: "usuario", attributes: ["id", "username"]}
+    }
+]
+
+const getPostCompletoById = async(id) => {
+    return await Post.findByPk(id, {
+        include: includePostCompleto,
+        order: [[{model: Comentario, as: "comentarios"}, "createdAt", "ASC"]]
+    })
+}
+
+const getPostsCompletos = async() => {
+    return await Post.findAll({
+        include: includePostCompleto,
+        order: [["createdAt", "DESC"]]
+    })
+}
+
 //get --> /
 const getPosts = async (req, res) => {
-    const data = await Post.findAll({})
-    res.status(200).json(data)
+    const posts = await getPostsCompletos()
+    res.status(200).json(posts)
 }
 
 //get --> /:id
 const getPostById = async(req, res) => {
     const id = req.params.id
-    const post = await Post.findByPk(id)
+    const post = await getPostCompletoById(id)
     res.status(200).json(post)
 }
 
@@ -52,14 +77,14 @@ const addNewImageToPost = async(req, res) => {
     const url = req.body.url //se manda solo la url por post
     const post = await Post.findByPk(idPost)
 
-    const newImage = await PostImages.create({ //se crea y asocia
+    const newImage = await PostImagen.create({ //se crea y asocia
         url, 
         postId: post.id
     })
 
     const postWithImages = await Post.findByPk(idPost, { //trae el post con las imagenes asociadas
         include: {
-            model: PostImages,
+            model: PostImagen,
             as: "imagenes"
         }
     })
@@ -73,7 +98,7 @@ const deleteImageFromPost = async(req, res) => {
     const idImage = req.params.idImage
     const post = await Post.findByPk(idPost)
 
-    const image = await PostImages.findOne({ //busca la imagen asociada al post
+    const image = await PostImagen.findOne({ //busca la imagen asociada al post
         where: {
             id: idImage,
             postId: idPost
@@ -94,10 +119,10 @@ const addTagToPost = async(req, res) => {
     await post.addTag(tag)
 
     const postWithTags = await Post.findByPk(idPost, { //trae el post con los tags
-        include: Tag
+        include: {model: Tag, as: "tags"}
     })
 
-    res.status(200).json(postWithTags.Tags)
+    res.status(200).json(postWithTags.tags)
 }
 
 // delete --> /:id/tags/:idTag
@@ -110,9 +135,9 @@ const deleteTagFromPost = async(req, res) => {
     await post.removeTag(tag)
 
     const postWithTags = await Post.findByPk(idPost, { //trae el post con los tags
-        include: Tag
+        include: {model: Tag, as: "tags"}
     })
-    res.status(200).json(postWithTags.Tags) //o solo devolver el tag eliminado?
+    res.status(200).json(postWithTags.tags) //o solo devolver el tag eliminado?
 }
 
 // get --> /tag/:id
@@ -123,11 +148,12 @@ const getPostsByTag = async(req, res) => {
         include: [
         {
             model: Tag,
+            as: "tags",
             where: {id: idTag},
             attributes: [] //no trae datos del tag
         },
-        {model: User, attributes: ["nickName"]},
-        {model: PostImages, as: "imagenes"} //si no hay imagenes, muestra: []
+        {model: Usuario, as: "usuario", attributes: ["username"]},
+        {model: PostImagen, as: "imagenes"} //si no hay imagenes, muestra: []
         ]
     })
 
@@ -139,11 +165,12 @@ const getCommentsByPost = async(req, res) => {
     const id = req.params.id
     const post = await Post.findByPk(id, {
         include: {
-            model: Comment,
+            model: Comentario,
+            as: "comentarios",
             where: {visible: true},
-            include: {model: User, attributes: ["nickName"]}
+            include: {model: Usuario, as:"usuario", attributes: ["username"]}
         },
-        order: [[Comment, "createdAt", "ASC"]]
+        order: [[{model: Comentario, as:"comentarios"}, "createdAt", "ASC"]]
     })
     res.status(200).json(post)
 }
@@ -164,7 +191,7 @@ const createPostWithImages = async(req, res) => {
 
     const promesas = []
     data.imagenes.forEach((img) => {
-        promesas.push(PostImages.findOrCreate({
+        promesas.push(PostImagen.findOrCreate({
             where: {url: {[Op.eq]: img.url}},
             defaults: img
         }))
@@ -176,7 +203,7 @@ const createPostWithImages = async(req, res) => {
     await newPost.addPostImages(imgs)
 
     const postWithImages = await Post.findByPk(newPost.id, {
-        include: {model: PostImages, as: "imagenes"}
+        include: {model: PostImagen, as: "imagenes"}
     })
 
     res.status(201).json(postWithImages)
@@ -203,7 +230,8 @@ const createPostWithTags = async(req, res) => {
 
     await newPost.addTags(tags)
 
-    const postWithTags = await Post.findByPk(newPost.id, {include: Tag})
+    const postWithTags = await Post.findByPk(newPost.id, {
+        include: {model: Tag, as: "tags"}})
 
     res.status(201).json(postWithTags)
 }
@@ -218,7 +246,7 @@ const createPostCompleto = async(req, res) => {
     
     const promesasImgs = []
     data.imagenes.forEach((img) => {
-        promesasImgs.push(PostImages.findOrCreate({
+        promesasImgs.push(PostImagen.findOrCreate({
             where: {url: {[Op.eq]: img.url}},
             defaults: img
         }))
@@ -238,8 +266,8 @@ const createPostCompleto = async(req, res) => {
 
     const postCompleto = await Post.findByPk(newPost.id, {
         include: [
-            {model: PostImages, as: "imagenes"},
-            Tag
+            {model: PostImagen, as: "imagenes"},
+            {model: Tag, as: "tags"}
         ]
     })
     res.status(201).json(postCompleto)

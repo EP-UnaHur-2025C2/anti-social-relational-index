@@ -1,34 +1,34 @@
-const {User} = require('../db/models');
+const {Usuario, PostImagen, Post, Tag, Comentario} = require('../db/models');
 
 
 const getUsers = async(req, res) => {
-  const data = await User.findAll({})
+  const data = await Usuario.findAll({})
   res.status(200).json(data)
 }
 
 
 const getUserById = async (req,res) => {
-    const data = await User.findOne({where:{id:req.params.id}});
+    const data = await Usuario.findByPk(req.params.id);
     res.status(200).json(data);
 };
 
 const createUser = async (req, res) => {
     try {
     
-      const newUser = await User.create(req.body);
+      const newUser = await Usuario.create(req.body);
       res.status(201).json(newUser);
     } catch (e) {
       res.status(400).json({ error: e });
     }
   };
 
-const updateNickName = async (req, res) =>{
+const updateUsername = async (req, res) =>{
     try {
         const idABuscar = await req.params.id
         
-        const newUser = await User.update(
+        const newUser = await Usuario.update(
             
-            { nickName: req.body.nickName },
+            { username: req.body.username },
             {
               where: {
                 id: idABuscar,
@@ -45,7 +45,7 @@ const updateEmail = async (req, res) =>{
     try {
         const idABuscar = await req.params.id
         
-        const newUser = await User.update(
+        const newUser = await Usuario.update(
             
             { email: req.body.email },
             {
@@ -63,7 +63,7 @@ const updateEmail = async (req, res) =>{
 const deleteUser = async (req, res) =>{
         const idABuscar = await req.params.id
         
-        const newUser = await User.destroy(
+        const newUser = await Usuario.destroy(
             
             {where: {
                 id: idABuscar,
@@ -75,17 +75,39 @@ const deleteUser = async (req, res) =>{
       
 }
 
+// get --> /:id/posts
+const getPostsByUser = async(req, res) => {
+  const id = req.params.id
+  const posts = await Post.findAll({
+    where: {usuarioId: id},
+    include: [
+      {model: PostImagen, as: "imagenes"},
+      {model: Tag, as: "tags"},
+      {model: Usuario, as:"usuario", attributes: ["id", "username"]}
+    ],
+    order: [["createdAt", "DESC"]]
+  })
+  res.status(200).json(posts)
+}
+
+//get --> /:id/comments
+const getCommentsByUser = async(req, res) => {
+  const id = req.params.id
+  const comments = await Comentario.findAll({
+    where: {usuarioId: id},
+    include: {model: Post, as: "post", attributes: ["id", "texto"]},
+    order: [["createdAt", "DESC" ]]
+  })
+  res.status(200).json(comments)
+}
+
+
+
 const followUser = async (req, res)=>{
-  try {
-        
-        const user = await User.findOne({where:{id : req.params.id}})
-        const userASeguir = await User.findOne({where:{id : req.params.idASeguir}})
-        const follow = user.addFollower(userASeguir)
-        res.status(201).json({message : user.nickName+" siguio de forma exitosa a: "+userASeguir.nickName });
-      } catch (e) {
-        
-        res.status(400).json({ error: 'hay un error' });
-      }
+  const user = await Usuario.findByPk(req.params.id)
+  const userASeguir = await Usuario.findByPk(req.params.idASeguir)
+  await user.addSeguido(userASeguir)
+  res.status(201).json({message: `${user.username} siguió a ${userASeguir.username}`});
 }
 
 
@@ -93,17 +115,17 @@ const unfollowUser = async(req, res) => {
   const idSeguidor = req.params.id
   const idSeguido = req.params.idSeguido
 
-  const seguidor = await User.findByPk(idSeguidor)
-  const seguido = await User.findByPk(idSeguido)
+  const seguidor = await Usuario.findByPk(idSeguidor)
+  const seguido = await Usuario.findByPk(idSeguido)
 
-  await seguidor.removeFollower(seguido)
-  res.status(200).json({message: `${seguidor.nickName} dejó de seguir a ${seguido.nickName}`})
+  await seguidor.removeSeguido(seguido)
+  res.status(200).json({message: `${seguidor.username} dejó de seguir a ${seguido.username}`})
 }
 
 const getSeguidos = async(req, res) => {
   const id = req.params.id
-  const user = await User.findByPk(id, {
-    include: {model: User, as: "seguidos", attributes: ["id", "nickName"]}
+  const user = await Usuario.findByPk(id, {
+    include: {model: Usuario, as: "seguidos", attributes: ["id", "username"]}
   })
 
   res.status(200).json(user.seguidos)
@@ -111,8 +133,8 @@ const getSeguidos = async(req, res) => {
 
 const getSeguidores = async(req, res) => {
   const id = req.params.id
-  const user = await User.findByPk(id, {
-    include: {model: User, as: "seguidores", attributes: ["id", "nickName"]}
+  const user = await Usuario.findByPk(id, {
+    include: {model: Usuario, as: "seguidores", attributes: ["id", "username"]}
   })
 
   res.status(200).json(user.seguidores)
@@ -123,9 +145,11 @@ const getSeguidores = async(req, res) => {
 module.exports = {getUsers, 
   getUserById, 
   createUser, 
-  updateNickName, 
+  updateUsername, 
   updateEmail, 
   deleteUser,
+  getPostsByUser,
+  getCommentsByUser,
   followUser, 
   unfollowUser,
   getSeguidos,
