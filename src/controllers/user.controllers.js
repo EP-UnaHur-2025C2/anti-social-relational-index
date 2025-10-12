@@ -71,7 +71,7 @@ const deleteUser = async (req, res) =>{
             });
             
             
-        res.status(201).json({message: "Usuario eliminado con exito"});
+        res.status(200).json({message: "Usuario eliminado con exito"});
       
 }
 
@@ -89,5 +89,44 @@ const followUser = async (req, res)=>{
 }
 
 
+const unfollowUser = async(req, res) => {
+  const idSeguidor = req.params.id
+  const idSeguido = req.params.idSeguido
 
-module.exports = {getUsers, getUserById, createUser, updateNickName, updateEmail, deleteUser,followUser};
+  const seguidor = await User.findByPk(idSeguidor)
+  const seguido = await User.findByPk(idSeguido)
+
+  await seguidor.removeFollower(seguido)
+  res.status(200).json({message: `${seguidor.nickName} dejó de seguir a ${seguido.nickName}`})
+}
+
+const getSeguidos = async(req, res) => {
+  const id = req.params.id
+  const user = await User.findByPk(id, {
+    include: {model: User, as: "seguidos", attributes: ["id", "nickName"]}
+  })
+
+  res.status(200).json(user.seguidos)
+} 
+
+const getSeguidores = async(req, res) => {
+  const id = req.params.id
+  const user = await User.findByPk(id, {
+    include: {model: User, as: "seguidores", attributes: ["id", "nickName"]}
+  })
+
+  res.status(200).json(user.seguidores)
+}
+
+
+
+module.exports = {getUsers, 
+  getUserById, 
+  createUser, 
+  updateNickName, 
+  updateEmail, 
+  deleteUser,
+  followUser, 
+  unfollowUser,
+  getSeguidos,
+  getSeguidores};
