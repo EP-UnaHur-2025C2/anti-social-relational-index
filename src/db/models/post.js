@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       Post.belongsTo(models.Usuario, { foreignKey: 'usuarioId', as: 'usuario' });
       Post.hasMany(models.Comentario, { foreignKey: 'postId', as: 'comentarios' });
       Post.hasMany(models.PostImagen, { foreignKey: 'postId', as: 'imagenes' });//Revisar el nombre del modelo
-      Post.belongsToMany(models.Tag, { through: 'PostTag', foreignKey: 'postId', as: 'tags' });
+      Post.belongsToMany(models.Tag, { through: 'PostTag', foreignKey: 'postId', as: 'tags',timestamps: false });//Revisar el nombre del modelo
     }
   }
   Post.init({
