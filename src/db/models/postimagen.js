@@ -15,10 +15,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   PostImagen.init({
-    url: DataTypes.STRING
+    url: { type: DataTypes.STRING , unique: true},
   }, {
     sequelize,
     modelName: 'PostImagen',
+    timestamps: false
   });
   return PostImagen;
 };
