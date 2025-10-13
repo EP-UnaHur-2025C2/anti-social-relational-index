@@ -17,7 +17,12 @@ module.exports = (sequelize, DataTypes) => {
   }
   Comment.init({
     texto: DataTypes.STRING,
-    visible: DataTypes.BOOLEAN
+    visible: {
+      type: new DataTypes.VIRTUAL(DataTypes.BOOLEAN, ['createdAt']),
+      get: function (){
+        return (new Date() - new Date(this.get('createdAt'))) < 183*24*60*60*1000; //6 meses
+      }
+    }
   }, {
     sequelize,
     modelName: 'Comment',

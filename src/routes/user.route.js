@@ -10,7 +10,7 @@ router.get("/", userControllers.getUsers)
 
 router.get('/:id',invalidId, validUser, userControllers.getUserById);
 //createUser
-router.put('/:id/nickname',invalidId,validUser, validNickname, userControllers.updateNickName)//arreglar, hacer un midleware para que no haya un nick igual
+//router.put('/:id/nickname',invalidId,validUser, validNickname, userControllers.updateNickName)//arreglar, hacer un midleware para que no haya un nick igual
 router.post('/:id/follow/:idASeguir',invalidId, userControllers.followUser)// bonus
 //'/updateEmail/:id'
 router.delete('/:id',invalidId,validUser, userControllers.deleteUser)
