@@ -1,5 +1,5 @@
 const { where, or } = require("sequelize")
-const {Post, PostImagen, Tag, Comentario, Usuario} = require("../db/models")
+const {Post, PostImagen, Tag, Comment, User} = require("../db/models")
 const { Op } = require("sequelize")
 
 // try / catch ; ver middlewares
@@ -7,20 +7,20 @@ const { Op } = require("sequelize")
 //app.use("/post")
 
 const includePostCompleto = [
-    {model: Usuario, as: "usuario", attributes: ["id", "username"]},
+    {model: User, as: "usuario", attributes: ["id", "username"]},
     {model: PostImagen, as:"imagenes"},
     {model: Tag, as: "tags"},
     {
-        model: Comentario,
+        model: Comment,
         as: "comentarios",
-        include: {model: Usuario, as: "usuario", attributes: ["id", "username"]}
+        include: {model: User, as: "usuario", attributes: ["id", "username"]}
     }
 ]
 
 const getPostCompletoById = async(id) => {
     return await Post.findByPk(id, {
         include: includePostCompleto,
-        order: [[{model: Comentario, as: "comentarios"}, "createdAt", "ASC"]]
+        order: [[{model: Comment, as: "comentarios"}, "createdAt", "ASC"]]
     })
 }
 
@@ -160,7 +160,7 @@ const getPostsByTag = async(req, res) => {
             where: {id: idTag},
             attributes: [] //no trae datos del tag
         },
-        {model: Usuario, as: "usuario", attributes: ["username"]},
+        {model: User, as: "usuario", attributes: ["username"]},
         {model: PostImagen, as: "imagenes"} //si no hay imagenes, muestra: []
         ]
     })
@@ -177,12 +177,12 @@ const getCommentsByPost = async(req, res) => {
     const id = req.params.id
     const post = await Post.findByPk(id, {
         include: {
-            model: Comentario,
+            model: Comment,
             as: "comentarios",
             where: {visible: true},
-            include: {model: Usuario, as:"usuario", attributes: ["username"]}
+            include: {model: User, as:"usuario", attributes: ["username"]}
         },
-        order: [[{model: Comentario, as:"comentarios"}, "createdAt", "ASC"]]
+        order: [[{model: Comment, as:"comentarios"}, "createdAt", "ASC"]]
     })
     res.status(200).json(post)
 }
@@ -194,7 +194,7 @@ const getCommentsByPost = async(req, res) => {
 // get --> /:id/feed
 const getPostsOfFollowedUsers = async(req, res) => {
     const id = req.params.id
-    const user = await Usuario.findByPk(id)
+    const user = await User.findByPk(id)
 
     const seguidos = await user.getSeguidos({attributes: ["id"]})
     const idSeguidos = seguidos.map(u => u.id)
@@ -202,15 +202,15 @@ const getPostsOfFollowedUsers = async(req, res) => {
     const posts = await Post.findAll({
         where: {usuarioId: {[Op.in]: idSeguidos}},
         include: [
-            {model: Usuario, as: "usuario", attributes: ["id", "username"]},
+            {model: User, as: "usuario", attributes: ["id", "username"]},
             {model: PostImagen, as: "imagenes"},
             {model: Tag, as:"tags"},
             {
-                model: Comentario, 
+                model: Comment, 
                 as: "comentarios",
                 where: {visible: true},
                 required: false,
-                include: {model: Usuario, as: "usuario", attributes: ["id", "username"]}
+                include: {model: User, as: "usuario", attributes: ["id", "username"]}
             }
         ],
         order: [["createdAt", "DESC"]]

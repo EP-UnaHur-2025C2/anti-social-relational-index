@@ -1,19 +1,19 @@
-const {Comentario, Usuario} = require("../db/models")
+const {Comment, User} = require("../db/models")
 
 //app.use("/comment")
 
 //get --> /
 //dejar???
 const getComments = async(req, res) => { //muestra todos los comentarios (visibles o no)
-    const data = await Comentario.findAll({})
+    const data = await Comment.findAll({})
     res.status(200).json(data)
 }
 
 //get --> /:id
 const getCommentById = async(req, res) => {
     const id = req.params.id
-    const comment = await Comentario.findByPk(id, {
-        include: {model: Usuario, as: "usuario"}
+    const comment = await Comment.findByPk(id, {
+        include: {model: User, as: "usuario"}
     })
     res.status(200).json(comment)
 }
@@ -21,7 +21,7 @@ const getCommentById = async(req, res) => {
 //post --> /
 const createComment = async(req, res) => {
     const data = req.body
-    const newComment = await Comentario.create(data)
+    const newComment = await Comment.create(data)
     res.status(201).json(newComment)
 }
 
@@ -29,7 +29,7 @@ const createComment = async(req, res) => {
 const updateComment = async(req, res) => {
     const id = req.params.id
     const data = req.body
-    const comment = await Comentario.findByPk(id)
+    const comment = await Comment.findByPk(id)
     await comment.update(data)
     res.status(200).json(comment)
 }
@@ -37,7 +37,7 @@ const updateComment = async(req, res) => {
 // delete --> /:id
 const deleteComment = async(req, res) => {
     const id = req.params.id
-    const comment = await Comentario.findByPk(id)
+    const comment = await Comment.findByPk(id)
 
     const removed = await comment.destroy()
     res.status(200).json(removed) //lo que eliminó. O: res.status(204).send() y no muestra nada
