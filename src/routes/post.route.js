@@ -18,10 +18,12 @@ router.put('/:id',invalidId, postController.updatePost);
 router.delete('/:id',invalidId, postController.deletePost);
 
 //Imagenes
-router.post('/:id/image',invalidId, postController.addNewImageToPost);
-router.delete('/:id/image/:idImagen',invalidId, postController.deleteImageFromPost);
+router.get('/:id/imagenes', invalidId, postController.getImagesByPost)
+router.post('/:id/imagenes',invalidId, postController.addNewImageToPost);
+router.delete('/:id/imagenes/:idImagen',invalidId, postController.deleteImageFromPost);
 
 //Tags
+router.get('/:id/tags', invalidId, postController.getTagsByPost)
 router.put('/:id/tag/:idTag',invalidId, postController.addTagToPost);
 router.delete('/:id/tag/:idTag',invalidId, postController.deleteTagFromPost);
 

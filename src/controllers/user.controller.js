@@ -143,4 +143,5 @@ module.exports = {getUsers,
   unfollowUser,
   getSeguidos,
   getSeguidores,
-  getCantSeguidores};
+  getCantSeguidores,
+  getCantSeguidos};

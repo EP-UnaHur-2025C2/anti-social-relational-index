@@ -24,10 +24,11 @@ router.delete('/:id/unfollow/:idSeguido',invalidId, userControllers.unfollowUser
 
 //'/updateEmail/:id'
 
-//Segidores - Seguidos
+//Seguidores - Seguidos
 router.get('/:id/seguidos',invalidId, validUser, userControllers.getSeguidos);
 router.get('/:id/seguidores',invalidId, validUser, userControllers.getSeguidores);
 router.get('/:id/seguidores/count',invalidId, validUser, userControllers.getCantSeguidores);
+router.get('/:id/seguidos/count', invalidId, validUser, userControllers.getCantSeguidos)
 
 
 module.exports =  router ;

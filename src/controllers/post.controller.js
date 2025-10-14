@@ -6,10 +6,22 @@ const { Op } = require("sequelize")
 
 //app.use("/post")
 
-const includePostCompleto = [
+const includePostSinComentarios = [
     {model: User, as: "usuario", attributes: ["id", "username"]},
-    {model: PostImagen, as:"imagenes"},
-    {model: Tag, as: "tags"},
+    {model: PostImagen, as: "imagenes"},
+    {model: Tag, as:"tags"}
+]
+
+const getPostsSinComentarios = async() => {
+    return await Post.findAll({
+        include: includePostSinComentarios,
+        order: [["createdAt", "DESC"]]
+    })
+}
+
+
+const includePostCompleto = [
+    ...includePostSinComentarios,
     {
         model: Comment,
         as: "comentarios",
@@ -24,16 +36,11 @@ const getPostCompletoById = async(id) => {
     })
 }
 
-const getPostsCompletos = async() => {
-    return await Post.findAll({
-        include: includePostCompleto,
-        order: [["createdAt", "DESC"]]
-    })
-}
+
 
 //get --> /
 const getPosts = async (req, res) => {
-    const posts = await getPostsCompletos()
+    const posts = await getPostsSinComentarios()
     res.status(200).json(posts)
 }
 
@@ -86,31 +93,30 @@ const addNewImageToPost = async(req, res) => {
         postId: post.id
     })
 
-    const postWithImages = await Post.findByPk(idPost, { //trae el post con las imagenes asociadas
-        include: {
-            model: PostImagen,
-            as: "imagenes"
-        }
-    })
+    const imagenes = await post.getImagenes()
 
-    res.status(201).json(postWithImages.imagenes) //trae array con todas las imagenes + la nueva (supuestamente)
+    res.status(201).json(imagenes) //trae array con todas las imagenes + la nueva (supuestamente)
 }
 
 //delete --> /:id/imgs/:idImage
 const deleteImageFromPost = async(req, res) => {
     const idPost = req.params.id
-    const idImage = req.params.idImagen
+    const idImagen = req.params.idImagen
     const post = await Post.findByPk(idPost)
+    const imagen = await PostImagen.findByPk(idImagen)
 
-    const image = await PostImagen.findOne({ //busca la imagen asociada al post
-        where: {
-            id: idImage,
-            postId: idPost
-        }
-    })
+    await post.removeImagen(imagen)
 
-    const removed = await image.destroy()
-    res.status(200).json(removed) //lo que eliminó. O: res.status(204).send() y no muestra nada
+    const imagenesRestantes = await post.getImagenes()
+    res.status(200).json(imagenesRestantes)
+}
+
+//get --> /:id/imagenes
+const getImagesByPost = async(req, res) => {
+    const id = req.params.id
+    const post = await Post.findByPk(id)
+    const images = await post.getImagenes()
+    res.status(200).json(images)
 }
 
 
@@ -126,11 +132,9 @@ const addTagToPost = async(req, res) => {
 
     await post.addTag(tag)
 
-    const postWithTags = await Post.findByPk(idPost, { //trae el post con los tags
-        include: {model: Tag, as: "tags"}
-    })
+    const tags = await post.getTags()
 
-    res.status(200).json(postWithTags.tags)
+    res.status(200).json(tags)
 }
 
 // delete --> /:id/tags/:idTag
@@ -142,10 +146,8 @@ const deleteTagFromPost = async(req, res) => {
 
     await post.removeTag(tag)
 
-    const postWithTags = await Post.findByPk(idPost, { //trae el post con los tags
-        include: {model: Tag, as: "tags"}
-    })
-    res.status(200).json(postWithTags.tags) //o solo devolver el tag eliminado?
+    const postWithTags = await post.getTags()
+    res.status(200).json(postWithTags) //o solo devolver el tag eliminado?
 }
 
 // get --> /tag/:id
@@ -154,18 +156,25 @@ const getPostsByTag = async(req, res) => {
 
     const posts = await Post.findAll({
         include: [
-        {
-            model: Tag,
-            as: "tags",
-            where: {id: idTag},
-            attributes: [] //no trae datos del tag
-        },
-        {model: User, as: "usuario", attributes: ["username"]},
-        {model: PostImagen, as: "imagenes"} //si no hay imagenes, muestra: []
+            ...includePostSinComentarios,
+            {
+                model: Tag,
+                as: "tags",
+                where: {id: {[Op.eq]: idTag}},
+                attributes: []
+            }
         ]
     })
 
     res.status(200).json(posts)
+}
+
+//get --> /:id/tags
+const getTagsByPost = async(req, res) => {
+    const id = req.params.id
+    const post = await Post.findByPk(id)
+    const tags = await post.getTags()
+    res.status(200).json(tags)
 }
 
 
@@ -175,16 +184,13 @@ const getPostsByTag = async(req, res) => {
 // get --> /:id/comments
 const getCommentsByPost = async(req, res) => {
     const id = req.params.id
-    const post = await Post.findByPk(id, {
-        include: {
-            model: Comment,
-            as: "comentarios",
-            where: {visible: true},
-            include: {model: User, as:"usuario", attributes: ["username"]}
-        },
-        order: [[{model: Comment, as:"comentarios"}, "createdAt", "ASC"]]
+    const post = await Post.findByPk(id)
+    const comentarios = await post.getComentarios({
+        where: {visible: true},
+        include: {model: User, as: "usuario", attributes: ["username"]},
+        order: [["createdAt", "ASC"]]
     })
-    res.status(200).json(post)
+    res.status(200).json(comentarios)
 }
 
 
@@ -201,18 +207,7 @@ const getPostsOfFollowedUsers = async(req, res) => {
 
     const posts = await Post.findAll({
         where: {usuarioId: {[Op.in]: idSeguidos}},
-        include: [
-            {model: User, as: "usuario", attributes: ["id", "username"]},
-            {model: PostImagen, as: "imagenes"},
-            {model: Tag, as:"tags"},
-            {
-                model: Comment, 
-                as: "comentarios",
-                where: {visible: true},
-                required: false,
-                include: {model: User, as: "usuario", attributes: ["id", "username"]}
-            }
-        ],
+        include: includePostSinComentarios,
         order: [["createdAt", "DESC"]]
     })
     res.status(200).json(posts)
@@ -247,7 +242,6 @@ const findOrCreateTags = async(tags) => {
 }
 
 
-// codigo repetido --> ver
 
 //post --> /create-image
 const createPostWithImages = async(req, res) => {
@@ -317,10 +311,12 @@ module.exports = {getPosts,
     updatePost, 
     deletePost, 
     addNewImageToPost, 
-    deleteImageFromPost, 
+    deleteImageFromPost,
+    getImagesByPost, 
     addTagToPost, 
     deleteTagFromPost,
     getPostsByTag,
+    getTagsByPost,
     getCommentsByPost,
     getPostsOfFollowedUsers,
     createPostWithImages,
