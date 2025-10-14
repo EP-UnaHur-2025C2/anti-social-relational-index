@@ -2,6 +2,9 @@
 const {
   Model
 } = require('sequelize');
+const meses = process.env.COMMENT_VISIBLE_MONTHS || 6
+const milisegundos = meses * 30.5 * 24 * 60 * 60 * 1000
+
 module.exports = (sequelize, DataTypes) => {
   class Comment extends Model {
     /**
@@ -20,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     visible: {
       type: new DataTypes.VIRTUAL(DataTypes.BOOLEAN, ['createdAt']),
       get: function (){
-        return (new Date() - new Date(this.get('createdAt'))) < 183*24*60*60*1000; //6 meses
+        return (new Date() - new Date(this.get('createdAt'))) < milisegundos;
       }
     }
   }, {
