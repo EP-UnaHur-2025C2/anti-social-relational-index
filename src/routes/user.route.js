@@ -27,6 +27,7 @@ router.delete('/:id/unfollow/:idSeguido',invalidId, userControllers.unfollowUser
 //Segidores - Seguidos
 router.get('/:id/seguidos',invalidId, validUser, userControllers.getSeguidos);
 router.get('/:id/seguidores',invalidId, validUser, userControllers.getSeguidores);
+router.get('/:id/seguidores/count',invalidId, validUser, userControllers.getCantSeguidores);
 
 
 module.exports =  router ;
