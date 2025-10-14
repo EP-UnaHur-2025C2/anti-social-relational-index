@@ -82,20 +82,21 @@ const deletePost = async(req, res) => {
 
 
 // put -->/:id/imgs (o post)
-// ver que onda con la URL porque es unique --> findOrCreate para que no haya duplicados?
 const addNewImageToPost = async(req, res) => {
     const idPost = req.params.id
     const url = req.body.url //se manda solo la url por post
     const post = await Post.findByPk(idPost)
 
-    const newImage = await PostImagen.create({ //se crea y asocia
-        url, 
-        postId: post.id
+    const [img, creada] = await PostImagen.findOrCreate({ //se crea y asocia
+        where: {url}, 
+        defaults: {url, postId: post.id}
     })
+
+    await post.addImagen(img)
 
     const imagenes = await post.getImagenes()
 
-    res.status(201).json(imagenes) //trae array con todas las imagenes + la nueva (supuestamente)
+    res.status(creada ? 201 : 200).json(imagenes) //trae array con todas las imagenes + la nueva (supuestamente)
 }
 
 //delete --> /:id/imgs/:idImage
