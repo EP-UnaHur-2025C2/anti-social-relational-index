@@ -9,7 +9,7 @@ const { Op } = require("sequelize")
 const includePostSinComentarios = [
     {model: User, as: "usuario", attributes: ["username"]},
     {model: PostImagen, as: "imagenes"},
-    {model: Tag, as:"tags"}
+    {model: Tag, as:"tags", attributes: ["id", "nombre"], through: { attributes: []}}
 ]
 
 const getPostsSinComentarios = async() => {
@@ -124,7 +124,7 @@ const getImagesByPost = async(req, res) => {
 
 
 
-//post --> /:id/tags 
+//post --> /:id/tag 
 const addTagToPost = async(req, res) => {
     const idPost = req.params.id
     const {nombre} = req.body
@@ -133,9 +133,9 @@ const addTagToPost = async(req, res) => {
 
     await post.addTag(tag)
 
-    const tags = await post.getTags()
+    const tags = await post.getTags({attributes: ["nombre"]})
 
-    res.status(creada? 201 : 200).json(tags)
+    res.status(creado ? 201 : 200).json(tags)
 }
 
 // delete --> /:id/tags/:idTag
@@ -147,7 +147,7 @@ const deleteTagFromPost = async(req, res) => {
 
     await post.removeTag(tag)
 
-    const postWithTags = await post.getTags()
+    const postWithTags = await post.getTags({attributes: ["nombre"]})
     res.status(200).json(postWithTags) //o solo devolver el tag eliminado?
 }
 
@@ -174,7 +174,7 @@ const getPostsByTag = async(req, res) => {
 const getTagsByPost = async(req, res) => {
     const id = req.params.id
     const post = await Post.findByPk(id)
-    const tags = await post.getTags()
+    const tags = await post.getTags({attributes: ["nombre"]})
     res.status(200).json(tags)
 }
 
