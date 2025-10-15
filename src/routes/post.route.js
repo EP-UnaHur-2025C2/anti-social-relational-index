@@ -31,6 +31,7 @@ router.delete('/:id/tag/:idTag',invalidId, postController.deleteTagFromPost);
 
 //Comentarios y Feed de Posts
 router.get('/:id/comments',invalidId, postController.getCommentsByPost);
+router.get('/:id/comments/lazy', invalidId, postController.getFirstTenCommentsById)
 router.get('/:id/feed',invalidId, postController.getPostsOfFollowedUsers);
 
 module.exports =  router ;  

@@ -27,5 +27,5 @@ app.listen(PORT, async(error) => {
         process.exit(1)
     }
     console.log(`App iniciada correctamente en el puerto ${PORT}`)
-    await sequelize.sync({force: true})
+    //await sequelize.sync({force: true})
 })

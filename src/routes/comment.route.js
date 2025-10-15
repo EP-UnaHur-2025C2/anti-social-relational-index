@@ -9,8 +9,7 @@ const {invalidId} = require('../middlewares/generic.middleware');
 //CRUD
 router.get("/", commentControllers.getComments);
 router.get('/:id',invalidId, commentControllers.getCommentById); //si hay una validComment en el middleware iria despues de invalidId
-router.get('/lazy/:id', invalidId, commentControllers.getFirstTenCommentsById)
-router.post('/', commentControllers.createComment);
+router.post('/', commentControllers.createComment); //middleware o schema para usuarioId y postID
 router.put('/:id',invalidId, commentControllers.updateComment); //si hay una validComment en el middleware iria despues de invalidId
 router.delete('/:id',invalidId, commentControllers.deleteComment);
 

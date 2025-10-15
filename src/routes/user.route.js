@@ -1,15 +1,15 @@
 const {Router} = require('express');
 const router = Router();
 const userControllers = require('../controllers/user.controller');
-const {validUser, validNickname,validEmail , validationSchemma, validationEmailSchema} = require ('../middlewares/user.midleware')
+const {validUser, validNickname,validEmail , validationSchema, validationEmailSchema} = require ('../middlewares/user.midleware')
 const {invalidId} = require ('../middlewares/generic.middleware');
 
 
 //CRUD
 router.get("/", userControllers.getUsers)
 router.get('/:id',invalidId, validUser, userControllers.getUserById);
-router.post('/', validationSchemma, userControllers.createUser);
-router.put('/:id',invalidId, validUser, validationSchemma, userControllers.updateUser);
+router.post('/', validationSchema, userControllers.createUser);
+router.put('/:id',invalidId, validUser, validationSchema, userControllers.updateUser);
 router.delete('/:id',invalidId, validUser, userControllers.deleteUser);
 
 //Relaciones

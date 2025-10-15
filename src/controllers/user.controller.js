@@ -42,7 +42,7 @@ const getPostsByUser = async(req, res) => {
     include: [
       {model: PostImagen, as: "imagenes"},
       {model: Tag, as: "tags"},
-      {model: User, as:"usuario", attributes: ["id", "username"]}
+      {model: User, as:"usuario", attributes: ["username"]}
     ],
     order: [["createdAt", "DESC"]]
   })
@@ -52,11 +52,14 @@ const getPostsByUser = async(req, res) => {
 //get --> /:id/comments
 const getCommentsByUser = async(req, res) => {
   const id = req.params.id
-  const comments = await Comment.findAll({
-    where: {usuarioId: id, visible: true}, //solo muestra los visibles
-    include: {model: Post, as: "post", attributes: ["id", "texto"]},
+  let comments = await Comment.findAll({
+    where: {usuarioId: id}, //solo muestra los visibles
+    include: {model: Post, as: "post", attributes: ["texto"]},
     order: [["createdAt", "DESC" ]]
   })
+
+  comments = comments.filter(c => c.visible)
+
   res.status(200).json(comments)
 }
 

@@ -39,7 +39,7 @@ const validEmail = async (req, res, next) => {
     }
 }
 
-const validationSchemma = (schema) =>{
+const validationSchema = (schema) =>{
     return (req, res, next) =>{
         const {error, _} = schema.validate(req.body, {abortEarly:false}) //segura que se recopilen todos los errores de validación a la vez, en lugar de detenerse al encontrar el primero.
         if(error){ //significa que los datos no cumplen con el esquema
@@ -61,4 +61,4 @@ const validationEmailSchema = (schema) =>{
 
 
 
-module.exports = {validUser,validNickname, validEmail ,validationSchemma, validationEmailSchema};   
+module.exports = {validUser,validNickname, validEmail ,validationSchema, validationEmailSchema};   

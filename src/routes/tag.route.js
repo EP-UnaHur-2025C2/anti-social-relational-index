@@ -5,7 +5,7 @@ const {invalidId} = require('../middlewares/generic.middleware');
 
 //CRUD
 router.get("/", tagController.getTags);
-router.get('/:id',invalidId, tagController.getTagById);
+router.get('/:id',invalidId, tagController.getTagById); //tira null si el id no existe
 router.post('/', tagController.createTag);
 router.put('/:id',invalidId, tagController.updateTag);
 router.delete('/:id',invalidId, tagController.deleteTag);

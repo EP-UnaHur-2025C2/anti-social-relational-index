@@ -186,12 +186,32 @@ const getTagsByPost = async(req, res) => {
 const getCommentsByPost = async(req, res) => {
     const id = req.params.id
     const post = await Post.findByPk(id)
-    const comentarios = await post.getComentarios({
-        where: {visible: true},
+    let comentarios = await post.getComentarios({
         include: {model: User, as: "usuario", attributes: ["username"]},
         order: [["createdAt", "ASC"]]
     })
+
+    comentarios = comentarios.filter(c => c.visible)
+
     res.status(200).json(comentarios)
+}
+
+//get --> /lazy/:id //muestra los primeros 10 comentarios de un post. Puede ser dinámico con la ruta
+const getFirstTenCommentsById = async(req, res) => {
+    const id = req.params.id
+    let {count, rows} = await Comment.findAndCountAll({
+        where: {postId: id}, //solo muestra los visibles
+        limit: 10,
+        offset: 0,
+        order: [["createdAt", "DESC"]],
+        include: {model: User, as: "usuario"},
+        attributes: ["id", "texto", "createdAt"]
+    })
+
+    visibles = rows.filter(c => c.visible)
+    resultado = {total: count, comentarios: visibles}
+
+    res.status(200).json(resultado)
 }
 
 
@@ -319,6 +339,7 @@ module.exports = {getPosts,
     getPostsByTag,
     getTagsByPost,
     getCommentsByPost,
+    getFirstTenCommentsById,
     getPostsOfFollowedUsers,
     createPostWithImages,
     createPostWithTags,
