@@ -7,7 +7,7 @@ const { Op } = require("sequelize")
 //app.use("/post")
 
 const includePostSinComentarios = [
-    {model: User, as: "usuario", attributes: ["id", "username"]},
+    {model: User, as: "usuario", attributes: ["username"]},
     {model: PostImagen, as: "imagenes"},
     {model: Tag, as:"tags"}
 ]
@@ -25,7 +25,7 @@ const includePostCompleto = [
     {
         model: Comment,
         as: "comentarios",
-        include: {model: User, as: "usuario", attributes: ["id", "username"]}
+        include: {model: User, as: "usuario", attributes: ["username"]}
     }
 ]
 
