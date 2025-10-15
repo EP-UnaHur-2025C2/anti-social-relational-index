@@ -13,12 +13,6 @@ router.post('/', postController.createPost);
 router.put('/:id',invalidId, postController.updatePost);
 router.delete('/:id',invalidId, postController.deletePost);
 
-//Filtros
-router.get("/tag/:id", postController.getPostsByTag);
-router.post("/create-imagenes", postController.createPostWithImages);
-router.post("/create-tags", postController.createPostWithTags);
-router.post("/create-completo", postController.createPostCompleto);
-
 //Imagenes
 router.get('/:id/imagenes', invalidId, postController.getImagesByPost)
 router.post('/:id/imagenes',invalidId, postController.addNewImageToPost); //se tiene que mandar url
@@ -28,6 +22,12 @@ router.delete('/:id/imagenes/:idImagen',invalidId, postController.deleteImageFro
 router.get('/:id/tags', invalidId, postController.getTagsByPost)
 router.post('/:id/tag',invalidId, postController.addTagToPost); //verificar que el nombre del tag venga en el body (middleware o schema)
 router.delete('/:id/tag/:idTag',invalidId, postController.deleteTagFromPost);
+
+//Filtros
+router.get("/tag/:id", postController.getPostsByTag);
+router.post("/create-imagenes", postController.createPostWithImages);
+router.post("/create-tags", postController.createPostWithTags);
+router.post("/create-completo", postController.createPostCompleto);
 
 //Comentarios y Feed de Posts
 router.get('/:id/comments',invalidId, postController.getCommentsByPost);

@@ -208,7 +208,7 @@ const getFirstTenCommentsById = async(req, res) => {
     })
 
     visibles = rows.filter(c => c.visible)
-    resultado = {total: count, comentarios: visibles}
+    resultado = {total: count, primeros_diez_comentarios: visibles}
 
     res.status(200).json(resultado)
 }
