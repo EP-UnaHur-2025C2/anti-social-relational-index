@@ -1,7 +1,7 @@
-import userRoute from './routes/user.route'
-import postRoute from './routes/post.route.js'
-import commentRoute from './routes/comment.route.js'
-import tagRoute from './routes/tag.route.js'
+const userRoute = require('./routes/user.route')
+const postRoute = require('./routes/post.route.js')
+const commentRoute = require('./routes/comment.route.js')
+const tagRoute = require('./routes/tag.route.js')
 require("dotenv").config()
 
 const express = require("express")
@@ -27,5 +27,5 @@ app.listen(PORT, async(error) => {
         process.exit(1)
     }
     console.log(`App iniciada correctamente en el puerto ${PORT}`)
-    //await sequelize.sync({force: true})
+    await sequelize.sync({force: true})
 })

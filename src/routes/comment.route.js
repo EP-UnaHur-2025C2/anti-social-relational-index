@@ -1,7 +1,7 @@
 const {Router} = require('express');
 const router = Router();
-const commentControllers = require('../controllers/comment.controllers');
-const {validComment} = require('../middlewares/comment.middleware')
+const commentControllers = require('../controllers/comment.controller');
+//const {validComment} = require('../middlewares/comment.middleware')
 const {invalidId} = require('../middlewares/generic.middleware');
 
 //validar que el usuario exista para crear un comentario (igual que el post)!!!
