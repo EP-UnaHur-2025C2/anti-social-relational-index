@@ -124,18 +124,18 @@ const getImagesByPost = async(req, res) => {
 
 
 
-//put --> /:id/tags/:idTag (o post)
+//post --> /:id/tags 
 const addTagToPost = async(req, res) => {
     const idPost = req.params.id
-    const idTag = req.params.idTag
+    const {nombre} = req.body
     const post = await Post.findByPk(idPost)
-    const tag = await Tag.findByPk(idTag)
+    const [tag, creado] = await Tag.findOrCreate({where: {nombre} })
 
     await post.addTag(tag)
 
     const tags = await post.getTags()
 
-    res.status(200).json(tags)
+    res.status(creada? 201 : 200).json(tags)
 }
 
 // delete --> /:id/tags/:idTag

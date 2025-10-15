@@ -4,11 +4,7 @@ const postController = require('../controllers/post.controller');
 const {invalidId} = require('../middlewares/generic.middleware');
 //const {validPost, validationSchemma} = require('../middlewares/post.middleware');
 
-//Filtros
-router.get("/tag/:id", postController.getPostsByTag);
-router.post("/create-image", postController.createPostWithImages);
-router.post("/create-tag", postController.createPostWithTags);
-router.post("/create-completo", postController.createPostCompleto); 
+//validar que el usuario exista!!!
 
 //CRUD
 router.get("/", postController.getPosts);
@@ -17,6 +13,12 @@ router.post('/', postController.createPost);
 router.put('/:id',invalidId, postController.updatePost);
 router.delete('/:id',invalidId, postController.deletePost);
 
+//Filtros
+router.get("/tag/:id", postController.getPostsByTag);
+router.post("/create-image", postController.createPostWithImages);
+router.post("/create-tag", postController.createPostWithTags);
+router.post("/create-completo", postController.createPostCompleto);
+
 //Imagenes
 router.get('/:id/imagenes', invalidId, postController.getImagesByPost)
 router.post('/:id/imagenes',invalidId, postController.addNewImageToPost);
@@ -24,7 +26,7 @@ router.delete('/:id/imagenes/:idImagen',invalidId, postController.deleteImageFro
 
 //Tags
 router.get('/:id/tags', invalidId, postController.getTagsByPost)
-router.put('/:id/tag/:idTag',invalidId, postController.addTagToPost);
+router.post('/:id/tag',invalidId, postController.addTagToPost); //verificar que el nombre del tag venga en el body (middleware o schema)
 router.delete('/:id/tag/:idTag',invalidId, postController.deleteTagFromPost);
 
 //Comentarios y Feed de Posts
