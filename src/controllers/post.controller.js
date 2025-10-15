@@ -8,7 +8,7 @@ const { Op } = require("sequelize")
 
 const includePostSinComentarios = [
     {model: User, as: "usuario", attributes: ["username"]},
-    {model: PostImagen, as: "imagenes"},
+    {model: PostImagen, as: "imagenes", attributes: ["id", "url"]},
     {model: Tag, as:"tags", attributes: ["id", "nombre"], through: { attributes: []}}
 ]
 
@@ -87,12 +87,12 @@ const addNewImageToPost = async(req, res) => {
     const url = req.body.url //se manda solo la url por post
     const post = await Post.findByPk(idPost)
 
-    const [img, creada] = await PostImagen.findOrCreate({ //se crea y asocia
+    const [img, creada] = await PostImagen.findOrCreate({ //si la imagen ya estaba asociada a un post, se reasocia al que se manda por parametro (?)
         where: {url}, 
         defaults: {url, postId: post.id}
     })
 
-    await post.addImagen(img)
+    await post.addImagene(img)
 
     const imagenes = await post.getImagenes()
 
@@ -106,7 +106,7 @@ const deleteImageFromPost = async(req, res) => {
     const post = await Post.findByPk(idPost)
     const imagen = await PostImagen.findByPk(idImagen)
 
-    await post.removeImagen(imagen)
+    await post.removeImagene(imagen)
 
     const imagenesRestantes = await post.getImagenes()
     res.status(200).json(imagenesRestantes)
@@ -151,7 +151,7 @@ const deleteTagFromPost = async(req, res) => {
     res.status(200).json(postWithTags) //o solo devolver el tag eliminado?
 }
 
-// get --> /tag/:id
+// get --> /tag/:id. Solo muestra el post sin comentarios + el tag que se busca (si tiene mas tags, no se muestran)
 const getPostsByTag = async(req, res) => {
     const idTag = req.params.id
 
@@ -161,8 +161,7 @@ const getPostsByTag = async(req, res) => {
             {
                 model: Tag,
                 as: "tags",
-                where: {id: {[Op.eq]: idTag}},
-                attributes: []
+                where: {id: {[Op.eq]: idTag}}
             }
         ]
     })
@@ -270,14 +269,17 @@ const createPostWithImages = async(req, res) => {
 
     const newPost = await Post.create({
         texto: data.texto, 
-        userId: data.userId})
+        usuarioId: data.usuarioId})
 
     const imgs = await findOrCreateImages(data.imagenes)
 
     await newPost.addImagenes(imgs)
 
     const postWithImages = await Post.findByPk(newPost.id, {
-        include: {model: PostImagen, as: "imagenes"}
+        include: [
+            {model: User, as:"usuario", attributes: ["username"]},
+            {model: PostImagen, as: "imagenes", attributes: ["id", "url"]}
+        ]
     })
 
     res.status(201).json(postWithImages)
@@ -289,14 +291,17 @@ const createPostWithTags = async(req, res) => {
 
     const newPost = await Post.create({
         texto: data.texto, 
-        userId: data.userId})
+        usuarioId: data.usuarioId})
     
     const tags = await findOrCreateTags(data.tags)
 
     await newPost.addTags(tags)
 
     const postWithTags = await Post.findByPk(newPost.id, {
-        include: {model: Tag, as: "tags"}})
+        include: [
+            {model: User, as:"usuario", attributes: ["username"]},
+            {model: Tag, as: "tags", attributes: ["id","nombre"], through: {attributes: []}}
+        ]})
 
     res.status(201).json(postWithTags)
 }
@@ -307,18 +312,19 @@ const createPostCompleto = async(req, res) => {
 
     const newPost = await Post.create({
         texto: data.texto, 
-        userId: data.userId})
+        usuarioId: data.usuarioId})
     
     const imgs = await findOrCreateImages(data.imagenes)
-    const tags = await findOrCreateTags(data.tags)
-
     await newPost.addImagenes(imgs)
+    const tags = await findOrCreateTags(data.tags)
     await newPost.addTags(tags)
+
 
     const postCompleto = await Post.findByPk(newPost.id, {
         include: [
-            {model: PostImagen, as: "imagenes"},
-            {model: Tag, as: "tags"}
+            {model: User, as:"usuario", attributes: ["username"]},
+            {model: PostImagen, as: "imagenes", attributes: ["id", "url"]},
+            {model: Tag, as: "tags", attributes: ["id","nombre"], through: {attributes: []}}
         ]
     })
     res.status(201).json(postCompleto)

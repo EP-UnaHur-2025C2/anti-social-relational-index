@@ -15,13 +15,13 @@ router.delete('/:id',invalidId, postController.deletePost);
 
 //Filtros
 router.get("/tag/:id", postController.getPostsByTag);
-router.post("/create-image", postController.createPostWithImages);
-router.post("/create-tag", postController.createPostWithTags);
+router.post("/create-imagenes", postController.createPostWithImages);
+router.post("/create-tags", postController.createPostWithTags);
 router.post("/create-completo", postController.createPostCompleto);
 
 //Imagenes
 router.get('/:id/imagenes', invalidId, postController.getImagesByPost)
-router.post('/:id/imagenes',invalidId, postController.addNewImageToPost);
+router.post('/:id/imagenes',invalidId, postController.addNewImageToPost); //se tiene que mandar url
 router.delete('/:id/imagenes/:idImagen',invalidId, postController.deleteImageFromPost);
 
 //Tags
