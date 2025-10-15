@@ -9,6 +9,7 @@ const getComments = async(req, res) => { //muestra todos los comentarios (visibl
     res.status(200).json(data)
 }
 
+
 //get --> /:id
 const getCommentById = async(req, res) => {
     const id = req.params.id
@@ -16,6 +17,20 @@ const getCommentById = async(req, res) => {
         include: {model: User, as: "usuario"}
     })
     res.status(200).json(comment)
+}
+
+//get --> /lazy/:id //muestra los primeros 10 comentarios de un post
+const getFirstTenCommentsById = async(req, res) => {
+    const id = req.params.id
+    const comments = await Comment.findAndCountAll({
+        where: {postId: id, visible: true}, //solo muestra los visibles
+        limit: 10,
+        offset: 0,
+        order: [["createdAt", "DESC"]],
+        include: {model: User, as: "usuario"},
+        attributes: ["id", "texto", "createdAt"]
+    })
+    res.status(200).json(comments)
 }
 
 //post --> /
