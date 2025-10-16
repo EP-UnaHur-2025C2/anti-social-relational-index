@@ -54,7 +54,8 @@ const getPostById = async(req, res) => {
 
 //post --> /
 const createPost = async(req, res) => {
-    const data = req.body
+    const {usuarioId, ...body} = req.body //para que no se pueda mandar el usuarioId por body
+    const data = {...body, usuarioId: req.user.id} //el id del usuario autenticado
     const newPost = await Post.create(data)
     res.status(201).json(newPost)
 }
