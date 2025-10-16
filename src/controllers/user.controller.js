@@ -28,6 +28,7 @@ const createUser = async (req, res) => {
   res.status(201).json(newUser)
 };
 
+// NO va try / catch porque eso lo manejan los middlewares / schemas (responsabilidad unica)
 const updateUser = async (req, res) =>{
   const id = req.params.id
   const data = req.body
@@ -36,11 +37,28 @@ const updateUser = async (req, res) =>{
   res.status(200).json(user)
 }
 
+// NO va try / catch porque eso lo manejan los middlewares / schemas (responsabilidad unica)
+const updateEmail = async (req, res) =>{ 
+        const id = await req.params.id
+        
+        const newUser = await User.update(
+            { email: req.body.email },
+            {
+              where: {
+                id: id,
+              },
+            });
+        res.status(201).json({message: "email modificado con exito"})
+}
+
 
 const deleteUser = async (req, res) =>{
   const id = await req.params.id
   const user = await User.findByPk(id)
-  const removed = await user.destroy()    
+  const removed = await user.destroy({where: {
+                id: id,
+              },
+            });
   
   res.status(200).json(removed); //lo que eliminó. O: res.status(204).send() y no muestra nada
 }
@@ -64,9 +82,10 @@ const getPostsByUser = async(req, res) => {
 const getCommentsByUser = async(req, res) => {
   const id = req.params.id
   let comments = await Comment.findAll({
-    where: {usuarioId: id}, //solo muestra los visibles
+    where: {usuarioId: id},
     include: {model: Post, as: "post", attributes: ["texto"]},
-    order: [["createdAt", "DESC" ]]
+    order: [["createdAt", "DESC" ]],
+    attributes: {exclude: ["updatedAt"]}
   })
 
   comments = comments.filter(c => c.visible)
@@ -75,13 +94,14 @@ const getCommentsByUser = async(req, res) => {
 }
 
 
-
+// NO va try / catch porque eso lo manejan los middlewares / schemas (responsabilidad unica)
 const followUser = async (req, res)=>{
   const user = await User.findByPk(req.params.id)
   const userASeguir = await User.findByPk(req.params.idASeguir)
   await user.addSeguido(userASeguir)
   res.status(201).json({message: `${user.username} siguió a ${userASeguir.username}`});
 }
+
 
 
 const unfollowUser = async(req, res) => {
@@ -158,4 +178,5 @@ module.exports = {getUsers,
   getSeguidos,
   getSeguidores,
   getCantSeguidores,
-  getCantSeguidos};
+  getCantSeguidos,
+   updateEmail};

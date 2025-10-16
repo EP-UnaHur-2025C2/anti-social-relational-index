@@ -5,7 +5,7 @@ const {Comment, User, Post} = require("../db/models")
 //get --> /
 //dejar???
 const getComments = async(req, res) => { //muestra todos los comentarios (visibles o no)
-    const data = await Comment.findAll({})
+    const data = await Comment.findAll({attributes: {exclude: ["updatedAt"]}})
     res.status(200).json(data)
 }
 
@@ -17,7 +17,8 @@ const getCommentById = async(req, res) => {
         include:[
             {model: User, as: "usuario", attributes: ["username"]},
             {model: Post, as: "post", attributes: ["texto"]}
-        ] 
+        ],
+        attributes: {exclude: "updatedAt"} 
     })
     res.status(200).json(comment)
 }

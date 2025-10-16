@@ -14,11 +14,11 @@ const validUser =async (req, res, next) =>{
 }
 
 const validNickname = async (req, res, next) => {
-    const { nickName } = req.body;
-    if (!nickName) {
+    const { username } = req.body;
+    if (!username) {
         return res.status(400).json({ message: "El nickname es requerido" });
     }
-    if(!await User.findOne({ where: { nickName }})){
+    if(!await User.findOne({ where: { username }})){
         next()
     }
     else {
@@ -59,6 +59,16 @@ const validationEmailSchema = (schema) =>{
     }
 }
 
+const validUserByParam = (parametro) => {
+    return async(req, res, next) => {
+        const id = req.params[parametro]
+        const user = await User.findOne({where: {id}})
+        if (!user) {
+            return res.status(404).json({message: `Usuario con id ${id} no existe`})
+        }
+        next()
+    }
+}
 
 
-module.exports = {validUser,validNickname, validEmail ,validationSchema, validationEmailSchema};   
+module.exports = {validUser,validNickname, validEmail ,validationSchema, validationEmailSchema, validUserByParam};   

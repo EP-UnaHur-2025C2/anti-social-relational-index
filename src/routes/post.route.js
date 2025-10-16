@@ -2,36 +2,41 @@ const {Router} = require('express');
 const router = Router();
 const postController = require('../controllers/post.controller');
 const {invalidId} = require('../middlewares/generic.middleware');
-//const {validPost, validationSchemma} = require('../middlewares/post.middleware');
-
+const {validPost, validPostBody, validPostImagesBody} = require('../middlewares/post.middleware');
+const {creationSchema, contenidoSchema, postCompletoSchema} = require('../schemas/post.schema');
+const {urlSchema, allImagesSchema} = require('../schemas/postimagen.schema');
+const { tagSchema, allTagsSchema } = require('../schemas/tag.schema');
+const { validPostImagen } = require('../middlewares/postImagen.middleware');
+const { validTag } = require('../middlewares/tag.middleware');
+const { validUser } = require('../middlewares/user.midleware');
 //validar que el usuario exista!!!
 
 //CRUD
 router.get("/", postController.getPosts);
-router.get('/:id',invalidId, postController.getPostById);
-router.post('/', postController.createPost);
-router.put('/:id',invalidId, postController.updatePost);
-router.delete('/:id',invalidId, postController.deletePost);
+router.get('/:id',invalidId, validPost, postController.getPostById); //agregado del validPost
+router.post('/', validPostBody(creationSchema), postController.createPost); //agregado del schema a las rutas y del validPostBody(creationSchema)
+router.patch('/:id',invalidId,validPost, validPostBody(contenidoSchema), postController.updatePost); //agregado del schema a las rutas, validPPost del validPostBody(contenidoSchema)
+router.delete('/:id',invalidId, validPost, postController.deletePost);
 
 //Imagenes
-router.get('/:id/imagenes', invalidId, postController.getImagesByPost)
-router.post('/:id/imagenes',invalidId, postController.addNewImageToPost); //se tiene que mandar url
-router.delete('/:id/imagenes/:idImagen',invalidId, postController.deleteImageFromPost);
+router.get('/:id/imagenes', invalidId, validPost, postController.getImagesByPost)
+router.post('/:id/imagenes',invalidId, validPost, validPostImagesBody(urlSchema), postController.addNewImageToPost); //validPost y validPostImagesBody(imagesSchema)//se tiene que mandar url
+router.delete('/:id/imagenes/:idImagen',invalidId, validPostImagen ,postController.deleteImageFromPost);
 
 //Tags
-router.get('/:id/tags', invalidId, postController.getTagsByPost)
-router.post('/:id/tag',invalidId, postController.addTagToPost); //verificar que el nombre del tag venga en el body (middleware o schema)
-router.delete('/:id/tag/:idTag',invalidId, postController.deleteTagFromPost);
+router.get('/:id/tags', invalidId, validPost, postController.getTagsByPost)
+router.post('/:id/tag',invalidId, validPost, validPostBody(tagSchema), postController.addTagToPost); //verificar que el nombre del tag venga en el body (middleware o schema)
+router.delete('/:id/tag/:idTag', invalidId, validTag, postController.deleteTagFromPost);
 
 //Filtros
-router.get("/tag/:id", postController.getPostsByTag);
-router.post("/create-imagenes", postController.createPostWithImages);
-router.post("/create-tags", postController.createPostWithTags);
-router.post("/create-completo", postController.createPostCompleto);
+router.get("/tag/:id", validTag, postController.getPostsByTag);
+router.post("/create-imagenes", validPostBody(allImagesSchema), postController.createPostWithImages);
+router.post("/create-tags", validPostBody(allTagsSchema) ,postController.createPostWithTags);
+router.post("/create-completo", validPostBody(postCompletoSchema) ,postController.createPostCompleto);
 
 //Comentarios y Feed de Posts
-router.get('/:id/comments',invalidId, postController.getCommentsByPost);
-router.get('/:id/comments/lazy', invalidId, postController.getFirstTenCommentsById)
-router.get('/user/:id/feed',invalidId, postController.getPostsOfFollowedUsers);
+router.get('/:id/comments',invalidId, validPost, postController.getCommentsByPost);
+router.get('/:id/comments/lazy', invalidId, validPost, postController.getFirstTenCommentsById)
+router.get('/user/:id/feed',invalidId, validUser, postController.getPostsOfFollowedUsers);
 
 module.exports =  router ;  
