@@ -1,4 +1,4 @@
-const joi=require('joi')
+const joi = require('joi')
 
 const contenidoSchema= joi.object({
     texto: joi.string().trim().min(10).max(200).messages({
