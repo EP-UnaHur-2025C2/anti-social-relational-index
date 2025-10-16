@@ -3,12 +3,15 @@ const router = Router();
 const userControllers = require('../controllers/user.controller');
 const {validUser, validNickname,validEmail , validationSchema, validationEmailSchema} = require ('../middlewares/user.midleware')
 const {invalidId} = require ('../middlewares/generic.middleware');
+const { authenticateToken } = require('../middlewares/authentication');
 
+
+//router.post('/', userControllers.createUser);
 
 //CRUD
 router.get("/", userControllers.getUsers)
 router.get('/:id',invalidId, validUser, userControllers.getUserById);
-router.post('/', validationSchema, userControllers.createUser);
+
 router.put('/:id',invalidId, validUser, validationSchema, userControllers.updateUser);
 router.delete('/:id',invalidId, validUser, userControllers.deleteUser);
 
