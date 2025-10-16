@@ -12,24 +12,36 @@ const getUserById = async (req,res) => {
 };
 
 const createUser = async (req, res) => {
+  try{
   const data = req.body
   const newUser = await User.create(data)
-  res.status(201).json(newUser)
+  res.status(201).json(newUser)}
+  catch(error){
+    res.status(400).json({error: error.message})
+      }
 };
 
 const updateUser = async (req, res) =>{
+  try{
   const id = req.params.id
   const data = req.body
   const user = await User.findByPk(id)
   await user.update(data)
-  res.status(200).json(user)
+  res.status(200).json(user)}
+  catch(error){
+    res.status(400).json({error: error.message})
+      }
+
 }
 
 
 const deleteUser = async (req, res) =>{
   const id = await req.params.id
   const user = await User.findByPk(id)
-  const removed = await user.destroy()    
+  const removed = await user.destroy({where: {
+                id: id,
+              },
+            });
   
   res.status(200).json(removed); //lo que eliminó. O: res.status(204).send() y no muestra nada
 }
@@ -66,11 +78,17 @@ const getCommentsByUser = async(req, res) => {
 
 
 const followUser = async (req, res)=>{
+  try{
   const user = await User.findByPk(req.params.id)
   const userASeguir = await User.findByPk(req.params.idASeguir)
   await user.addSeguido(userASeguir)
   res.status(201).json({message: `${user.username} siguió a ${userASeguir.username}`});
+  } catch (e) {
+        
+        res.status(400).json({ error: 'hay un error' });
+      }
 }
+
 
 
 const unfollowUser = async(req, res) => {
