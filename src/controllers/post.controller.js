@@ -25,14 +25,15 @@ const includePostCompleto = [
     {
         model: Comment,
         as: "comentarios",
-        include: {model: User, as: "usuario", attributes: ["username"]}
+        include: {model: User, as: "usuario", attributes: ["username"]},
+        attributes: {exclude: ["updatedAt"]}
     }
 ]
 
 const getPostCompletoById = async(id) => {
     return await Post.findByPk(id, {
         include: includePostCompleto,
-        order: [[{model: Comment, as: "comentarios"}, "createdAt", "ASC"]]
+        order: [[{model: Comment, as: "comentarios"}, "createdAt", "ASC"]],
     })
 }
 
@@ -187,7 +188,8 @@ const getCommentsByPost = async(req, res) => {
     const post = await Post.findByPk(id)
     let comentarios = await post.getComentarios({
         include: {model: User, as: "usuario", attributes: ["username"]},
-        order: [["createdAt", "ASC"]]
+        order: [["createdAt", "ASC"]],
+        attributes: {exclude: ["updatedAt"]}
     })
 
     comentarios = comentarios.filter(c => c.visible)

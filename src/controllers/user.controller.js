@@ -72,9 +72,10 @@ const getPostsByUser = async(req, res) => {
 const getCommentsByUser = async(req, res) => {
   const id = req.params.id
   let comments = await Comment.findAll({
-    where: {usuarioId: id}, //solo muestra los visibles
+    where: {usuarioId: id},
     include: {model: Post, as: "post", attributes: ["texto"]},
-    order: [["createdAt", "DESC" ]]
+    order: [["createdAt", "DESC" ]],
+    attributes: {exclude: ["updatedAt"]}
   })
 
   comments = comments.filter(c => c.visible)

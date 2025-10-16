@@ -4,7 +4,7 @@ const postController = require('../controllers/post.controller');
 const {invalidId} = require('../middlewares/generic.middleware');
 const {validPost, validPostBody, validPostImagesBody} = require('../middlewares/post.middleware');
 const {creationSchema, contenidoSchema} = require('../schemas/post.schema');
-const {imagesSchema} = require('../schemas/image.schema');
+const {urlSchema} = require('../schemas/postimagen.schema'); //urlSchema o allImagesSchema???
 //validar que el usuario exista!!!
 
 //CRUD
@@ -16,7 +16,7 @@ router.delete('/:id',invalidId, validPost, postController.deletePost);
 
 //Imagenes
 router.get('/:id/imagenes', invalidId, postController.getImagesByPost)
-router.post('/:id/imagenes',invalidId, validPost, validPostImagesBody(imagesSchema), postController.addNewImageToPost); //validPost y validPostImagesBody(imagesSchema)//se tiene que mandar url
+router.post('/:id/imagenes',invalidId, validPost, validPostImagesBody(urlSchema), postController.addNewImageToPost); //validPost y validPostImagesBody(imagesSchema)//se tiene que mandar url
 router.delete('/:id/imagenes/:idImagen',invalidId, postController.deleteImageFromPost);
 
 //Tags

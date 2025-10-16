@@ -1,4 +1,4 @@
-const userRoute = require('./routes/user.route')
+const userRoute = require('./routes/user.route.js')
 const postRoute = require('./routes/post.route.js')
 const commentRoute = require('./routes/comment.route.js')
 const tagRoute = require('./routes/tag.route.js')
