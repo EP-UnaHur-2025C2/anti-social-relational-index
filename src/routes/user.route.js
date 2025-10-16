@@ -23,6 +23,7 @@ router.delete('/:id/unfollow/:idSeguido',invalidId, userControllers.unfollowUser
 //router.put('/:id/nickname',invalidId,validUser, validNickname, userControllers.updateNickName)//arreglar, hacer un midleware para que no haya un nick igual
 
 //'/updateEmail/:id'
+router.put('/updateEmail/:id',invalidId,validUser,validEmail,validationEmailSchema(emailSchema), userControllers.updateEmail)
 
 //Seguidores - Seguidos
 router.get('/:id/seguidos',invalidId, validUser, userControllers.getSeguidos);

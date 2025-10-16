@@ -34,6 +34,25 @@ const updateUser = async (req, res) =>{
 
 }
 
+const updateEmail = async (req, res) =>{
+    try {
+        const id = await req.params.id
+        
+        const newUser = await User.update(
+            //
+            { email: req.body.email },
+            {
+              where: {
+                id: id,
+              },
+            });
+        res.status(201).json({message: "email modificado con exito"});
+      } catch (e) {
+        
+        res.status(400).json({ error: e });
+      }
+}
+
 
 const deleteUser = async (req, res) =>{
   const id = await req.params.id
@@ -165,4 +184,5 @@ module.exports = {getUsers,
   getSeguidos,
   getSeguidores,
   getCantSeguidores,
-  getCantSeguidos};
+  getCantSeguidos,
+   updateEmail};
