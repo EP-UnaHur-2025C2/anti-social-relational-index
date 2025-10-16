@@ -5,7 +5,7 @@ const tagSchema = joi.object({
         "any.required": "El nombre es obligatorio",
         "string.empty": "El nombre no puede estar vacío",
         "string.min": "El nombre debe tener al menos 5 caracteres",
-        "string.max": "El nombre debe contener como maximo {#limit} de caracteres
+        "string.max": "El nombre debe contener como maximo {#limit} de caracteres"
 
     })
 });
