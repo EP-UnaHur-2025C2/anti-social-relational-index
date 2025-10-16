@@ -1,4 +1,5 @@
 const {User, PostImagen, Post, Tag, Comment} = require('../db/models');
+const bcrypt = require('bcrypt');
 
 
 const getUsers = async(req, res) => {
@@ -11,9 +12,19 @@ const getUserById = async (req,res) => {
   res.status(200).json(data);
 };
 
+const getUserByUsername = async (req, res) => {
+  const { username } = req.params;
+  const user = await User.findOne({ where: { username } });
+  res.status(200).json(user);
+};
+
 const createUser = async (req, res) => {
   const data = req.body
-  const newUser = await User.create(data)
+
+  //* Se hashea la contraseña antes de guardarla, para no dejarla como texto plano
+  const hashedPassword = await bcrypt.hash(data.password, 10);
+
+  const newUser = await User.create({...data, password: hashedPassword})
   res.status(201).json(newUser)
 };
 
