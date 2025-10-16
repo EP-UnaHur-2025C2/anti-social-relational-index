@@ -14,11 +14,11 @@ const validUser =async (req, res, next) =>{
 }
 
 const validNickname = async (req, res, next) => {
-    const { nickName } = req.body;
-    if (!nickName) {
+    const { username } = req.body;
+    if (!username) {
         return res.status(400).json({ message: "El nickname es requerido" });
     }
-    if(!await User.findOne({ where: { nickName }})){
+    if(!await User.findOne({ where: { username }})){
         next()
     }
     else {
