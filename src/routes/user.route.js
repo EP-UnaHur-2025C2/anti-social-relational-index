@@ -3,13 +3,13 @@ const router = Router();
 const userControllers = require('../controllers/user.controller');
 const {validUser, validNickname,validEmail , validationSchema, validationEmailSchema} = require ('../middlewares/user.midleware')
 const {invalidId} = require ('../middlewares/generic.middleware');
-
+const {schema, emailSchema} = require('../schemas/user.schema')
 
 //CRUD
 router.get("/", userControllers.getUsers)
 router.get('/:id',invalidId, validUser, userControllers.getUserById);
-router.post('/', validationSchema, userControllers.createUser);
-router.put('/:id',invalidId, validUser, validationSchema, userControllers.updateUser);
+router.post('/', validationSchema(schema), validNickname, userControllers.createUser); //agregado del schema a las rutas, del validateNickname que antes no estaba y del validationSchema(schema)
+router.put('/:id',invalidId, validUser, validationSchema(schema), userControllers.updateUser); //agregado del schema a las rutas y del validationSchema(schema)
 router.delete('/:id',invalidId, validUser, userControllers.deleteUser);
 
 //Relaciones
