@@ -11,46 +11,34 @@ const getUserById = async (req,res) => {
   res.status(200).json(data);
 };
 
+// NO va try / catch porque eso lo manejan los middlewares / schemas (responsabilidad unica)
 const createUser = async (req, res) => {
-  try{
   const data = req.body
   const newUser = await User.create(data)
-  res.status(201).json(newUser)}
-  catch(error){
-    res.status(400).json({error: error.message})
-      }
+  res.status(201).json(newUser)
 };
 
+// NO va try / catch porque eso lo manejan los middlewares / schemas (responsabilidad unica)
 const updateUser = async (req, res) =>{
-  try{
   const id = req.params.id
   const data = req.body
   const user = await User.findByPk(id)
   await user.update(data)
-  res.status(200).json(user)}
-  catch(error){
-    res.status(400).json({error: error.message})
-      }
-
+  res.status(200).json(user)
 }
 
-const updateEmail = async (req, res) =>{
-    try {
+// NO va try / catch porque eso lo manejan los middlewares / schemas (responsabilidad unica)
+const updateEmail = async (req, res) =>{ 
         const id = await req.params.id
         
         const newUser = await User.update(
-            //
             { email: req.body.email },
             {
               where: {
                 id: id,
               },
             });
-        res.status(201).json({message: "email modificado con exito"});
-      } catch (e) {
-        
-        res.status(400).json({ error: e });
-      }
+        res.status(201).json({message: "email modificado con exito"})
 }
 
 
@@ -95,17 +83,12 @@ const getCommentsByUser = async(req, res) => {
 }
 
 
-
+// NO va try / catch porque eso lo manejan los middlewares / schemas (responsabilidad unica)
 const followUser = async (req, res)=>{
-  try{
   const user = await User.findByPk(req.params.id)
   const userASeguir = await User.findByPk(req.params.idASeguir)
   await user.addSeguido(userASeguir)
   res.status(201).json({message: `${user.username} siguió a ${userASeguir.username}`});
-  } catch (e) {
-        
-        res.status(400).json({ error: 'hay un error' });
-      }
 }
 
 
