@@ -8,11 +8,11 @@ const comentarioSchema = joi.object ({
         "string.max" : "El contenido debe contener como maximo {#limit} de caracteres",
         "string.empty": "El contenido no puede ser vacio"
     }),
-    usuarioId: joi.number().integer().required().messages({
-    "any.required": "El id de usuario es obligatorio",
-    "number.base": "El id de usuario debe ser un número",
-    "number.integer": "El id de usuario debe ser un número entero"
-    }),
+    // usuarioId: joi.number().integer().required().messages({
+    // "any.required": "El id de usuario es obligatorio",
+    // "number.base": "El id de usuario debe ser un número",
+    // "number.integer": "El id de usuario debe ser un número entero"
+    // }),
     postId: joi.number().integer().required().messages({
     "any.required": "El id del post es obligatorio",
     "number.base": "El id del post debe ser un número",
@@ -26,11 +26,11 @@ const comentarioPatchSchema = joi.object ({
         "string.max" : "El contenido debe contener como maximo {#limit} de caracteres",
         "string.empty": "El contenido no puede ser vacio"
     }),
-    usuarioId: joi.number().integer().messages({
-    "any.required": "El id de usuario es obligatorio",
-    "number.base": "El id de usuario debe ser un número",
-    "number.integer": "El id de usuario debe ser un número entero"
-    }),
+    // usuarioId: joi.number().integer().messages({
+    // "any.required": "El id de usuario es obligatorio",
+    // "number.base": "El id de usuario debe ser un número",
+    // "number.integer": "El id de usuario debe ser un número entero"
+    // }),
     postId: joi.number().integer().messages({
     "any.required": "El id del post es obligatorio",
     "number.base": "El id del post debe ser un número",

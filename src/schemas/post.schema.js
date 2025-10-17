@@ -16,11 +16,16 @@ const creationSchema = joi.object({
         "string.max" : "El contenido debe contener como maximo {#limit} de caracteres",
         "string.empty": "El texto no puede estar vacio",
     }),
-    usuarioId: joi.number().integer().required().messages({
-        "any.required" :"el id de usuario es obligatorio",
-        "number.base": "El id de usuario debe ser un número",
-        "number.integer": "El id de usuario debe ser un número entero"
-    })
+
+    //*No es necesario que venga el userId porque se lo toma del token
+    //*el post se crea para el usuario que hizo la peticion
+    //*si se quisiera crear un post para otro usuario, ahi si tendria sentido validar que el userId exista
+    
+    // usuarioId: joi.number().integer().required().messages({
+    //     "any.required" :"el id de usuario es obligatorio",
+    //     "number.base": "El id de usuario debe ser un número",
+    //     "number.integer": "El id de usuario debe ser un número entero"
+    // })
     
 });
 

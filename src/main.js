@@ -2,6 +2,8 @@ const userRoute = require('./routes/user.route.js')
 const postRoute = require('./routes/post.route.js')
 const commentRoute = require('./routes/comment.route.js')
 const tagRoute = require('./routes/tag.route.js')
+const authMiddleware = require('./middlewares/authentication.js')
+const authRoute = require('./routes/auth.route.js')
 require("dotenv").config()
 
 const express = require("express")
@@ -15,10 +17,11 @@ app.use(express.json())
 
 
 //rutas:
-app.use("/user", userRoute);
-app.use("/post", postRoute);
-app.use("/comment", commentRoute);
-app.use("/tag", tagRoute)
+app.use('/auth', authRoute);
+app.use("/user", authMiddleware, userRoute);
+app.use("/post",authMiddleware, postRoute);
+app.use("/comment",authMiddleware, commentRoute);
+app.use("/tag",authMiddleware, tagRoute);
 
 
 app.listen(PORT, async(error) => {

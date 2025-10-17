@@ -3,7 +3,7 @@ const {User} = require('../db/models')
 
 const validUser =async (req, res, next) =>{
 
-    if(await User.findOne({where:{id:req.params.id}})){
+    if(await User.findOne({where:{id:req.user.id}})){
         next()
     }
         
