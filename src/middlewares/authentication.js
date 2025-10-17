@@ -14,11 +14,15 @@ const authenticateToken = async (req, res, next) => {
     }
 
     // Soporta "Bearer <token>" o token directo
-    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader;
-
-    if (!token) {
-        return res.status(401).json({ message: "Token no proporcionado" });
+    const [type, token] = authHeader.split(" ")
+    if (type !== "Bearer" || !token) {
+        return res.status(401).json({message: "Token inválido o formato incorrecto"})
     }
+    //const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader;
+
+    // if (!token) {
+    //     return res.status(401).json({ message: "Token no proporcionado" });
+    // }
 
     if (!secret_key) {
         return res.status(500).json({ message: "Secret key no configurada en el servidor" });

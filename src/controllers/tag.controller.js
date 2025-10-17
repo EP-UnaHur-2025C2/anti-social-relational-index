@@ -17,8 +17,8 @@ const getTagById = async(req, res) => {
 
 //post --> /
 const createTag = async(req, res) => {
-    const data = req.body
-    const newTag = await Tag.create(data)
+    const {nombre} = req.body
+    const newTag = await Tag.create({nombre})
     res.status(201).json(newTag)
 }
 
@@ -26,10 +26,10 @@ const createTag = async(req, res) => {
 //dejar???
 const updateTag = async(req, res) => {
     const id = req.params.id
-    const data = req.body
+    const {nombre} = req.body
     const tag = await Tag.findByPk(id)
 
-    await tag.update(data)
+    await tag.update({nombre})
     res.status(200).json(tag)
 }
 

@@ -1,11 +1,11 @@
 const {Router} = require('express');
 const router = Router();
 const userControllers = require('../controllers/user.controller');
-const {validUser, validNickname,validEmail , validationSchema, validationEmailSchema, validUserByParam} = require ('../middlewares/user.midleware')
+const {validUser, validationSchema, validUserByParam} = require ('../middlewares/user.midleware')
 const {invalidId} = require ('../middlewares/generic.middleware');
 const { authenticateToken } = require('../middlewares/authentication');
 
-const {schema, emailSchema, schemaPatch} = require('../schemas/user.schema')
+const {schema, schemaPatch} = require('../schemas/user.schema')
 
 //router.post('/', userControllers.createUser);
 
@@ -23,11 +23,6 @@ router.get('/:id/comments',invalidId, validUser, userControllers.getCommentsByUs
 //Follow - Unfollow
 router.post('/:id/follow/:idASeguir',invalidId, validUser, validUserByParam("idASeguir"),userControllers.followUser);// bonus
 router.delete('/:id/unfollow/:idSeguido',invalidId, validUser, validUserByParam("idSeguido"), userControllers.unfollowUser);// bonus
-
-//router.put('/:id/nickname',invalidId,validUser, validNickname, userControllers.updateNickName)//arreglar, hacer un midleware para que no haya un nick igual
-
-//'/updateEmail/:id' //dejar? sacar?//*Yo lo sacaria, ya que el email se puede cambiar con el updateUser
-router.put('/updateEmail/:id',invalidId,validUser,validEmail,validationEmailSchema(emailSchema), userControllers.updateEmail) 
 
 //Seguidores - Seguidos
 router.get('/:id/seguidos',invalidId, validUser, userControllers.getSeguidos);

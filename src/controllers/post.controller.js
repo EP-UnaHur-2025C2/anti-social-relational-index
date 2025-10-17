@@ -54,8 +54,8 @@ const getPostById = async(req, res) => {
 
 //post --> /
 const createPost = async(req, res) => {
-    const {usuarioId, ...body} = req.body //para que no se pueda mandar el usuarioId por body
-    const data = {...body, usuarioId: req.user.id} //el id del usuario autenticado
+    const {texto} = req.body //para que no se pueda mandar el usuarioId por body
+    const data = {texto, usuarioId: req.user.id} //el id del usuario autenticado
     const newPost = await Post.create(data)
     res.status(201).json(newPost)
 }
@@ -63,10 +63,10 @@ const createPost = async(req, res) => {
 //put --> /:id
 const updatePost = async(req, res) => {
     const id = req.params.id
-    const data = req.body
+    const {texto} = req.body
     const post = await Post.findByPk(id)
 
-    await post.update(data)
+    await post.update({texto})
     res.status(200).json(post)
 }
 
@@ -268,13 +268,12 @@ const findOrCreateTags = async(tags) => {
 
 //post --> /create-image
 const createPostWithImages = async(req, res) => {
-    const data = req.body //imagenes: array
+    const {texto, imagenes} = req.body //imagenes: array
+    const data = {texto, usuarioId: req.user.id}
 
-    const newPost = await Post.create({
-        texto: data.texto, 
-        usuarioId: data.usuarioId})
+    const newPost = await Post.create(data)
 
-    const imgs = await findOrCreateImages(data.imagenes)
+    const imgs = await findOrCreateImages(imagenes)
 
     await newPost.addImagenes(imgs)
 
@@ -290,15 +289,14 @@ const createPostWithImages = async(req, res) => {
 
 // post --> /create-tag
 const createPostWithTags = async(req, res) => {
-    const data = req.body
+    const {texto, tags} = req.body
+    const data = {texto, usuarioId: req.user.id}
 
-    const newPost = await Post.create({
-        texto: data.texto, 
-        usuarioId: data.usuarioId})
+    const newPost = await Post.create(data)
     
-    const tags = await findOrCreateTags(data.tags)
+    const tagsObj = await findOrCreateTags(tags)
 
-    await newPost.addTags(tags)
+    await newPost.addTags(tagsObj)
 
     const postWithTags = await Post.findByPk(newPost.id, {
         include: [
@@ -311,16 +309,15 @@ const createPostWithTags = async(req, res) => {
 
 //post --> /create-completo
 const createPostCompleto = async(req, res) => {
-    const data = req.body
+    const {texto, imagenes, tags} = req.body
+    const data = {texto, usuarioId:req.user.id}
 
-    const newPost = await Post.create({
-        texto: data.texto, 
-        usuarioId: data.usuarioId})
+    const newPost = await Post.create(data)
     
-    const imgs = await findOrCreateImages(data.imagenes)
+    const imgs = await findOrCreateImages(imagenes)
     await newPost.addImagenes(imgs)
-    const tags = await findOrCreateTags(data.tags)
-    await newPost.addTags(tags)
+    const tagsObj = await findOrCreateTags(tags)
+    await newPost.addTags(tagsObj)
 
 
     const postCompleto = await Post.findByPk(newPost.id, {

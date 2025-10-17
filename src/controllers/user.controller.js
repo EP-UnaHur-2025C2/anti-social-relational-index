@@ -18,13 +18,14 @@ const getUserByUsername = async (req, res) => {
   res.status(200).json(user);
 };
 
+
 const createUser = async (req, res) => {
-  const data = req.body
+  const {username, email, password} = req.body
 
   //* Se hashea la contraseña antes de guardarla, para no dejarla como texto plano
-  const hashedPassword = await bcrypt.hash(data.password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-  const newUser = await User.create({...data, password: hashedPassword})
+  const newUser = await User.create({username, email, password: hashedPassword})
   res.status(201).json(newUser)
 };
 
@@ -33,31 +34,16 @@ const updateUser = async (req, res) =>{
   const id = req.params.id
   
   //*Se encarga de que si el atributo a cambiar sea el password se hashee
-  let data = req.body;
-  if (data.password) {
-    const hashed = await bcrypt.hash(data.password, 10);
-    data = { ...data, password: hashed };
+  let {username, email, password} = req.body;
+  if (password) {
+    password = await bcrypt.hash(password, 10);
   }
+  const data = { username, email, password};
 
   const user = await User.findByPk(id)
 
   await user.update(data)
   res.status(200).json(user)
-}
-
-// NO va try / catch porque eso lo manejan los middlewares / schemas (responsabilidad unica)
-//*No creo que este endpoint sea necesario, ya que el email se puede cambiar con el updateUser
-const updateEmail = async (req, res) =>{ 
-        const id = await req.params.id
-        
-        const newUser = await User.update(
-            { email: req.body.email },
-            {
-              where: {
-                id: id,
-              },
-            });
-        res.status(201).json({message: "email modificado con exito"})
 }
 
 
@@ -187,5 +173,4 @@ module.exports = {getUsers,
   getSeguidos,
   getSeguidores,
   getCantSeguidores,
-  getCantSeguidos,
-   updateEmail};
+  getCantSeguidos};
