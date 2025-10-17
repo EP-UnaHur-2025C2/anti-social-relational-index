@@ -1,3 +1,5 @@
+const { PostImagen } = require('../db/models/postimagen');
+
 const validPostImagen = async (req, res, next) => {
     const postImagen = await PostImagen.findByPk(req.params.id);
     if (!postImagen) {

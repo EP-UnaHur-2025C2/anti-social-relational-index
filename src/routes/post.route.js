@@ -2,7 +2,7 @@ const {Router} = require('express');
 const router = Router();
 const postController = require('../controllers/post.controller');
 const {invalidId} = require('../middlewares/generic.middleware');
-const {validPost, validPostBody, validPostImagesBody} = require('../middlewares/post.middleware');
+const {validPost, validPostBody, validPostImagesBody, validPostByUser} = require('../middlewares/post.middleware');
 const {creationSchema, contenidoSchema, postCompletoSchema} = require('../schemas/post.schema');
 const {urlSchema, allImagesSchema} = require('../schemas/postimagen.schema');
 const { tagSchema, allTagsSchema } = require('../schemas/tag.schema');
@@ -15,7 +15,7 @@ const { validUser } = require('../middlewares/user.midleware');
 router.get("/", postController.getPosts);
 router.get('/:id',invalidId, validPost, postController.getPostById); //agregado del validPost
 router.post('/', validPostBody(creationSchema), postController.createPost); //agregado del schema a las rutas y del validPostBody(creationSchema)
-router.patch('/:id',invalidId,validPost, validPostBody(contenidoSchema), postController.updatePost); //agregado del schema a las rutas, validPPost del validPostBody(contenidoSchema)
+router.patch('/:id',invalidId,validPost, validPostByUser, validPostBody(contenidoSchema), postController.updatePost); //agregado del schema a las rutas, validPPost del validPostBody(contenidoSchema)
 router.delete('/:id',invalidId, validPost, postController.deletePost);
 
 //Imagenes

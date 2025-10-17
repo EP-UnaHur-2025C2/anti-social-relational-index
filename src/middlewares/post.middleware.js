@@ -8,6 +8,16 @@ const validPost = async (req, res, next) => {
     next();
 }
 
+//*Asumiendo que un usuario no puede modificar/eliminar posts de otros usuarios
+const validPostByUser = async (req, res, next) => {
+    const post = await Post.findByPk(req.params.id);
+
+    if (post.usuarioId !== req.user.id) {
+        return res.status(403).json({ message: 'No autorizado' });
+    }
+    next();
+}
+
 const validPostBody = (schema) => {
     return (req, res, next) => {
         const { error } = schema.validate(req.body, { abortEarly: false });
@@ -28,4 +38,4 @@ const validPostImagesBody = (schema) => {
     }
 }
 
-module.exports = { validPost, validPostBody, validPostImagesBody };
+module.exports = { validPost, validPostBody, validPostImagesBody, validPostByUser };
