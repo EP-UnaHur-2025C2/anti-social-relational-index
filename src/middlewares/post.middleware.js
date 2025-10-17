@@ -1,7 +1,7 @@
 const { Post } = require('../db/models');
 
 const validPost = async (req, res, next) => {
-    const post = await Post.findByPk(req.params.id);
+    const post = await Post.findByPk(req.body.postId || req.params.id);
     if (!post) {
         return res.status(404).json({ message: 'Post no encontrado' });
     }

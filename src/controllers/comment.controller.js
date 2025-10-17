@@ -27,7 +27,8 @@ const getCommentById = async(req, res) => {
 
 //post --> /
 const createComment = async(req, res) => {
-    const data = req.body
+    const {usuarioId, ...body} = req.body //para que no se pueda mandar el usuarioId por body
+    const data = {...body, usuarioId: req.user.id} 
     const newComment = await Comment.create(data)
     res.status(201).json(newComment)
 }
