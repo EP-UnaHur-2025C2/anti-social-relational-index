@@ -1,10 +1,9 @@
-const userRoute = require('./routes/user.route.js')
-const postRoute = require('./routes/post.route.js')
-const commentRoute = require('./routes/comment.route.js')
-const tagRoute = require('./routes/tag.route.js')
+
 const authMiddleware = require('./middlewares/authentication.js')
-const authRoute = require('./routes/auth.route.js')
+
 require("dotenv").config()
+
+const {userRoute,postRoute, commentRoute,tagRoute , authRoute} = require("./routes/index.js")
 
 const express = require("express")
 const {sequelize} = require("./db/models") //const db = require('./db/models');
