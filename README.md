@@ -1,72 +1,139 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/F3f9PyrQ)
+
 # UnaHur - Red Anti-Social
+#  Grupo: Index
 
-Se solicita el modelado y desarrollo de un sistema backend para una red social llamada **“UnaHur Anti-Social Net”**, inspirada en plataformas populares que permiten a los usuarios realizar publicaciones y recibir comentarios sobre las mismas.
 
-![Imagen](./assets/ANTI-SOCIALNET.jpeg)
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/F3f9PyrQ)
 
-# Contexto del Proyecto
 
-En una primera reunión con los sponsors del proyecto, se definieron los siguientes requerimientos para el desarrollo de un **MVP (Producto Mínimo Viable)**:
+> **💻Backend para una red social, creada para la materia Estrategias de Persistencia - UNAHUR.💻**
 
-- El sistema debe permitir que un usuario registrado realice una publicación (post), incluyendo **obligatoriamente una descripción**. De forma opcional, se podrán asociar **una o más imágenes** a dicha publicación.
+---
 
-- Las publicaciones pueden recibir **comentarios** por parte de otros usuarios.
+# 📌 Descripción del proyecto
 
-- Las publicaciones pueden estar asociadas a **etiquetas (tags)**. Una misma etiqueta puede estar vinculada a múltiples publicaciones.
+UnaHur Anti-Social Net es una red social que permite a los usuarios compartir posts con imágenes, tags y recibir comentarios. El proyecto busca replicar funcionalidades comunes de redes sociales, priorizando una arquitectura limpia, flexible y bien documentada para su despliegue backend.
 
-- Es importante que los **comentarios más antiguos que X meses** (valor configurable mediante variables de entorno, por ejemplo, 6 meses) **no se muestren** en la visualización de los posteos.
+---
+# ⚙️ Tecnologías utilizadas
 
-####
+- Node.js + Express
+- Sequelize ORM + SQLite
+- Swagger para documentación
+- Postman (colecciones de prueba)
 
-# Entidades y Reglas de Negocio
+- Para su correcta instalacion al clonar el repositorio, ejecutar npm i en la terminal.
 
-Los sponsors definieron los siguientes nombres y descripciones para las entidades:
+---
+# 🧱 Entidades principales
 
-- **User**: Representa a los usuarios registrados en el sistema. El campo `nickName` debe ser **único** y funcionará como identificador principal del usuario.
+| Entidad       | Descripción                                                                 |
+|---------------|-----------------------------------------------------------------------------|
+| **User**      | Usuario del sistema. `username` debe ser único.                             |
+| **Post**      | Publicación con descripción obligatoria y fecha. Puede tener imágenes.      |
+| **PostImagen**| Imágenes asociadas a un post. Se almacena la URL.                           |
+| **Comment**   | Comentarios en publicaciones. Se ocultan si superan cierta antigüedad.      |
+| **Tag**       | Etiquetas asociadas a publicaciones. Relación muchos a muchos.              |
 
-- **Post**: Publicación realizada por un usuario en una fecha determinada que contiene el texto que desea publicar. Puede tener **cero o más imágenes** asociadas. Debe contemplarse la posibilidad de **agregar o eliminar imágenes** posteriormente.
+## 📁 Estructura del Proyecto
 
-- **Post_Images**: Entidad que registra las imágenes asociadas a los posts. Para el MVP, solo se requiere almacenar la **URL de la imagen alojada**.
+```
+📁 src/
+├── controllers/       # Lógica de negocio por entidad
+├── routes/            # Definición de endpoints
+├── db/
+│   ├── config/        # Configuración Mongo y Redis
+|   ├── models         # Distintas tablas
+├── middlewares/       # Validaciones y manejo de errores
+├── routes             # Rutas de acceso 
+├── schemas/           # Validaciones Joi
+├── utils              # Genera Token    
+├── main.js            # Punto de entrada de la app
+```
 
-- **Comment**: Comentario que un usuario puede realizar sobre una publicación. Incluye la fecha en la que fue realizado y una indicación de si está **visible o no**, dependiendo de la configuración (X meses).
+---
+## 📄 Endpoints Principales
 
-- **Tag**: Etiqueta que puede ser asignada a un post. Una etiqueta puede estar asociada a **muchos posts**, y un post puede tener **múltiples etiquetas**.
+> Todos los endpoints están organizados por entidad: `/auth`, `/user`, `/post`, `/comment`, `/tag`.
 
-# Requerimientos Técnicos
+### 👤 Usuarios
 
-1. **Modelado de Datos**
+- `GET /user/` - Lista de todos los usuarios
+- `GET /user/:id` - Obtener usuario por ID
+- `PATH user/:id `- Modifica (actualiza) datos del usuario
+- `DELETE /user/:id`- Elimina la cuenta del ususario
+# Rutas de contenido de usuario:
+- `GET /user/:id/posts`- Obtener todos los post creados por el usuario con id
+- `GET /user/:id/comments`- Obtener todos los comentarios por un usuario especifico
+# Rutas de acciones sociales:
+- `POST /users/:id/follow/:idASeguir `- Seguir a otro usuario
+- `DELETE /users/:id/unfollow/:idSeguido` - Deja de seguir al usuario especificado
+- `GET /user/:id/seguidores`- Obtiene lista de seguidores
+- `GET /user/:id/seguidos`- Obtiene lista de seguidos
+- `GET /user/:id/seguidores/count`- Obtener la cantidad de seguidores
+- `GET /user/:id/seguidos/count`-Obtener el conteo de seguidos
 
-   - Diseñar el **Diagrama Entidad-Relación (DER)** considerando relaciones de tipo uno a muchos y muchos a muchos.
+### 📝 Posts
 
-   - Además de las claves primarias, identificar en qué entidades se requiere una **clave única** (`unique key`), y definirla explícitamente.
+- `GET /posts` - Obtener todos los posteos
+- `GET /post/:id` - Obtener un post especifico por id
+- `POST /posts/` - Crear nuevo post
+- `PATH /posts/:id` - Modifica (actualiza) un post por id
+- `DELETE /posts/:id` - Eliminar post
 
-2. **Desarrollo del Backend**
+### 💬 Comentarios
+- `GET /comment/`- Lista de todos los comentarios 
+- `GET /comment/:id`- Otener un comentario especifico
+- `POST /comment/`- Crea un nuevo comentario
+- `PATCH	/comment/:id`- Modificar (actualizar) el comentario
+- `DELETE	/comment/:id`- Eliminar (borrar) un comentario
 
-   - Crear los **endpoints CRUD** necesarios para cada entidad.
+### 🏷 Etiquetas
+- `GET	/tag/`- Obtener la lista de todas las etiquetas
+- `GET	/tag/:id`- Obtener una etiqueta especifica
+- `POST	/tag/`- Crear una nueva etiqueta
+- `PATCH	/tag/:id`- Modificar una etiqueta
+- `DELETE	/tag/:id`- Eliminar (borrar) una ruta
 
-   - Implementar las rutas necesarias para gestionar las relaciones entre entidades (por ejemplo: asociar imágenes a un post, etiquetas a una publicación, etc.).
+### 🔑 Autenticación
+- `POST	/auth/login`- Iniciar sesión. Si es correcta devuelve un Token
+- `/auth/register`- Crear nuevo usuario (Registro, con todos sus datos) 
 
-   - Desarrollar las validaciones necesarias para asegurar la integridad de los datos (schemas, validaciones de integridad referencial).
+---
 
-   - Desarrollar las funciones controladoras con una única responsabiliad evitando realizar comprobaciones innecesarias en esta parte del código.
+## 🎁 Bonus Implementados
 
-3. **Configuración y Portabilidad**
+- ✅ **Relaciones de seguimiento entre usuarios** (Seguidores/Siguiendo).
+- ✅ **Subida y descarga de imágenes:** Las imágenes enviadas por URL se descargan, validan y almacenan localmente.
+- ✅ **Caché con Redis**: para almacenar temporalmente comentarios y optimizar lectura de datos poco cambiantes.
+- ✅**Autenticación y Autorización por JWT**: Se implementó un sistema de JSON Web Tokens JWT para garantizar que todas las rutas de recursos estén protegidas y solo sean accesibles por usuarios válidos y verificados.
 
-   - El sistema debe poder cambiar de **base de datos** de forma transparente, utilizando configuración e instalación de dependencias adecuadas.
+---
 
-   - El sistema debe permitir configurar el **puerto de ejecución y variables de entorno** fácilmente.
+## 🚀 Ejecución del Proyecto
 
-4. **Documentación**
+1. Clonar repositorio:
+   git clone https://github.com/EP-UnaHur-2025C2/anti-social-relational-index.git
+   cd anti-social-relational-index
 
-   - Generar la documentación de la API utilizando **Swagger (formato YAML)**, incluyendo todos los endpoints definidos.
 
-5. **Colecciones de Prueba**
+2. Instalar dependencias:
+   
+   npm i
 
-   - Entregar las colecciones necesarias para realizar pruebas (por ejemplo, colecciones de Postman o archivos JSON de ejemplo).
 
-# Bonus
+3. Levantar servicios con Docker:
+   
+   docker-compose up
+   ```
+4. Iniciar servidor:
+   
+   npm run dev
+   
 
-- Hace el upload de las imganes que se asocian a un POST que lo guarden en una carpeta de imagenes dentro del servidor web.
-- ¿Cómo modelarías que un usuario pueda "seguir" a otros usuarios, y a su vez ser seguido por muchos? Followers
-- Con la información de los post no varia muy seguido que estrategias podrian utilizar la que la información no sea constantemente consultada desde la base de datos.
+---
+
+## 📚 Documentación
+
+- Swagger disponible en: `http://localhost:3001/doc/`
+- Colección de Postman en: 
