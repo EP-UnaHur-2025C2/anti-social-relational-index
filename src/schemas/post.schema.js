@@ -42,4 +42,10 @@ const postCompletoSchema = creationSchema.concat(
         tags: allTagsSchema
 }))
 
-module.exports={contenidoSchema, creationSchema, postConImagenes, postCompletoSchema}
+const postConTags = creationSchema.concat(
+    joi.object({
+        tags: allTagsSchema
+    })
+)
+
+module.exports={contenidoSchema, creationSchema, postConImagenes, postCompletoSchema, postConTags}

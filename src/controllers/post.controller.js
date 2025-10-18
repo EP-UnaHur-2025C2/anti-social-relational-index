@@ -254,16 +254,16 @@ const findOrCreateImages = async(imagenes, postId, transaction = null) => {
     return imgs
 }
 
-const findOrCreateTags = async(tags) => {
-    const promesas = []
-    tags.forEach(tag => {
-        promesas.push(Tag.findOrCreate({
-            where: {nombre: {[Op.eq]: tag.nombre}},
-            defaults: tag
-        }))
-    })
-    const result = await Promise.all(promesas)
-    return result.map(([tag, creado]) => tag)
+const findOrCreateTags = async(tags, postId, transaction = null) => {
+    const result = []
+    for (const tag of tags) {
+        let found = await Tag.findOne({ where: { nombre: { [Op.eq]: tag.nombre } }, transaction })
+        if (!found) {
+            found = await Tag.create({ nombre: tag.nombre, postId }, { transaction })
+        }
+        result.push(found)
+    }
+    return result
 }
 
 
@@ -274,27 +274,24 @@ const createPostWithImages = async(req, res) => {
     const data = {texto, usuarioId: req.user.id}
 
     const transaction = await Post.sequelize.transaction()
-    try {
-        const newPost = await Post.create(data, { transaction })
+    
+    const newPost = await Post.create(data, { transaction })
 
-        const imgs = await findOrCreateImages(imagenes || [], newPost.id, transaction)
+    const imgs = await findOrCreateImages(imagenes || [], newPost.id, transaction)
 
-        await newPost.addImagenes(imgs, { transaction })
+    await newPost.addImagenes(imgs, { transaction })
 
-        await transaction.commit()
+    await transaction.commit()
 
-        const postWithImages = await Post.findByPk(newPost.id, {
+    const postWithImages = await Post.findByPk(newPost.id, {
             include: [
                 {model: User, as:"usuario", attributes: ["username"]},
                 {model: PostImagen, as: "imagenes", attributes: ["id", "url"]}
             ]
-        })
+    })
 
-        res.status(201).json(postWithImages)
-    } catch (error) {
-        await transaction.rollback()
-        throw error
-    }
+    res.status(201).json(postWithImages)
+
 }
 
 // post --> /create-tag
@@ -302,11 +299,15 @@ const createPostWithTags = async(req, res) => {
     const {texto, tags} = req.body
     const data = {texto, usuarioId: req.user.id}
 
-    const newPost = await Post.create(data)
-    
-    const tagsObj = await findOrCreateTags(tags)
+    const transaction = await Post.sequelize.transaction()
 
-    await newPost.addTags(tagsObj)
+    const newPost = await Post.create(data, { transaction })
+
+    const tagsObj = await findOrCreateTags(tags || [], newPost.id, transaction)
+
+    await newPost.addTags(tagsObj, { transaction })
+
+    await transaction.commit()
 
     const postWithTags = await Post.findByPk(newPost.id, {
         include: [
