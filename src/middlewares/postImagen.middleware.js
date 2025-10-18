@@ -1,11 +1,12 @@
-const { PostImagen } = require('../db/models/postimagen');
+const { PostImagen } = require('../db/models');
 
 const validPostImagen = async (req, res, next) => {
-    const postImagen = await PostImagen.findByPk(req.params.id);
+    const idImagen = req.params.idImagen || req.params.id;
+    const postImagen = await PostImagen.findByPk(idImagen);
     if (!postImagen) {
         return res.status(404).json({ message: 'imagen no encontrada' });
     }
     next();
 }
 
-module.exports = {validPostImagen}
+module.exports = { validPostImagen }

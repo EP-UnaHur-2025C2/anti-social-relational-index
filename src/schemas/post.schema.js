@@ -2,6 +2,7 @@ const joi = require('joi');
 const { allTagsSchema } = require('./tag.schema');
 const { allImagesSchema } = require('./postimagen.schema');
 
+//? No se repiten aca entre contenidoSchema y creationSchema?
 const contenidoSchema= joi.object({
     texto: joi.string().trim().min(10).max(200).messages({
         "string.empty": "El texto no puede estar vacio",      
@@ -9,6 +10,7 @@ const contenidoSchema= joi.object({
         "string.max": "El contenido debe contener como maximo {#limit} de caracteres"
 })
 });
+
 const creationSchema = joi.object({
     texto: joi.string().trim().required().min(10).max(200).messages({
         "any.required" :"texto es obligatorio",
@@ -29,9 +31,15 @@ const creationSchema = joi.object({
     
 });
 
+const postConImagenes = creationSchema.concat(
+    joi.object({
+        imagenes: allImagesSchema
+}));
+
 const postCompletoSchema = creationSchema.concat(
     joi.object({
         imagenes: allImagesSchema,
         tags: allTagsSchema
 }))
-module.exports={contenidoSchema, creationSchema, postCompletoSchema}
+
+module.exports={contenidoSchema, creationSchema, postConImagenes, postCompletoSchema}

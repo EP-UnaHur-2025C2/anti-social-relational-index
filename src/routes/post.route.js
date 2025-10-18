@@ -3,7 +3,7 @@ const router = Router();
 const postController = require('../controllers/post.controller');
 const {invalidId} = require('../middlewares/generic.middleware');
 const {validPost, validPostBody, validPostImagesBody, validPostByUser} = require('../middlewares/post.middleware');
-const {creationSchema, contenidoSchema, postCompletoSchema} = require('../schemas/post.schema');
+const {creationSchema, contenidoSchema, postCompletoSchema, postConImagenes} = require('../schemas/post.schema');
 const {urlSchema, allImagesSchema} = require('../schemas/postimagen.schema');
 const { tagSchema, allTagsSchema } = require('../schemas/tag.schema');
 const { validPostImagen } = require('../middlewares/postImagen.middleware');
@@ -30,7 +30,7 @@ router.delete('/:id/tag/:idTag', invalidId, validTag, postController.deleteTagFr
 
 //Filtros
 router.get("/tag/:id", validTag, postController.getPostsByTag);
-router.post("/create-imagenes", validPostBody(allImagesSchema), postController.createPostWithImages);
+router.post("/create-imagenes", validPostBody(postConImagenes), postController.createPostWithImages);
 router.post("/create-tags", validPostBody(allTagsSchema) ,postController.createPostWithTags);
 router.post("/create-completo", validPostBody(postCompletoSchema) ,postController.createPostCompleto);
 

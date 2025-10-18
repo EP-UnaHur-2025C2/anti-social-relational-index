@@ -108,7 +108,7 @@ const deleteImageFromPost = async(req, res) => {
     const post = await Post.findByPk(idPost)
     const imagen = await PostImagen.findByPk(idImagen)
 
-    await post.removeImagene(imagen)
+    await imagen.destroy()
 
     const imagenesRestantes = await post.getImagenes()
     res.status(200).json(imagenesRestantes)
@@ -240,16 +240,18 @@ const getPostsOfFollowedUsers = async(req, res) => {
 
 
 
-const findOrCreateImages = async(imagenes) => {
-    const promesas = []
-    imagenes.forEach(img => {
-        promesas.push(PostImagen.findOrCreate({
-            where: {url: {[Op.eq]: img.url}},
-            defaults: img
-        }))
-    })
-    const result = await Promise.all(promesas)
-    return result.map(([img, creada]) => img)
+const findOrCreateImages = async(imagenes, postId, transaction = null) => {
+    const imgs = []
+    // hacer secuencial para evitar condiciones de carrera sobre UNIQUE
+    for (const img of imagenes) {
+        let found = await PostImagen.findOne({ where: { url: { [Op.eq]: img.url } }, transaction })
+        if (!found) {
+            // incluir postId en la creación para respetar posibles NOT NULL de la FK
+            found = await PostImagen.create({ url: img.url, postId }, { transaction })
+        }
+        imgs.push(found)
+    }
+    return imgs
 }
 
 const findOrCreateTags = async(tags) => {
@@ -268,23 +270,31 @@ const findOrCreateTags = async(tags) => {
 
 //post --> /create-image
 const createPostWithImages = async(req, res) => {
-    const {texto, imagenes} = req.body //imagenes: array
+    const {texto, imagenes} = req.body // imagenes: array
     const data = {texto, usuarioId: req.user.id}
 
-    const newPost = await Post.create(data)
+    const transaction = await Post.sequelize.transaction()
+    try {
+        const newPost = await Post.create(data, { transaction })
 
-    const imgs = await findOrCreateImages(imagenes)
+        const imgs = await findOrCreateImages(imagenes || [], newPost.id, transaction)
 
-    await newPost.addImagenes(imgs)
+        await newPost.addImagenes(imgs, { transaction })
 
-    const postWithImages = await Post.findByPk(newPost.id, {
-        include: [
-            {model: User, as:"usuario", attributes: ["username"]},
-            {model: PostImagen, as: "imagenes", attributes: ["id", "url"]}
-        ]
-    })
+        await transaction.commit()
 
-    res.status(201).json(postWithImages)
+        const postWithImages = await Post.findByPk(newPost.id, {
+            include: [
+                {model: User, as:"usuario", attributes: ["username"]},
+                {model: PostImagen, as: "imagenes", attributes: ["id", "url"]}
+            ]
+        })
+
+        res.status(201).json(postWithImages)
+    } catch (error) {
+        await transaction.rollback()
+        throw error
+    }
 }
 
 // post --> /create-tag
@@ -312,22 +322,30 @@ const createPostCompleto = async(req, res) => {
     const {texto, imagenes, tags} = req.body
     const data = {texto, usuarioId:req.user.id}
 
-    const newPost = await Post.create(data)
-    
-    const imgs = await findOrCreateImages(imagenes)
-    await newPost.addImagenes(imgs)
-    const tagsObj = await findOrCreateTags(tags)
-    await newPost.addTags(tagsObj)
+    const transaction = await Post.sequelize.transaction()
+    try {
+        const newPost = await Post.create(data, { transaction })
 
+        const imgs = await findOrCreateImages(imagenes || [], newPost.id, transaction)
+        await newPost.addImagenes(imgs, { transaction })
 
-    const postCompleto = await Post.findByPk(newPost.id, {
-        include: [
-            {model: User, as:"usuario", attributes: ["username"]},
-            {model: PostImagen, as: "imagenes", attributes: ["id", "url"]},
-            {model: Tag, as: "tags", attributes: ["id","nombre"], through: {attributes: []}}
-        ]
-    })
-    res.status(201).json(postCompleto)
+        const tagsObj = await findOrCreateTags(tags || [])
+        await newPost.addTags(tagsObj, { transaction })
+
+        await transaction.commit()
+
+        const postCompleto = await Post.findByPk(newPost.id, {
+            include: [
+                {model: User, as:"usuario", attributes: ["username"]},
+                {model: PostImagen, as: "imagenes", attributes: ["id", "url"]},
+                {model: Tag, as: "tags", attributes: ["id","nombre"], through: {attributes: []}}
+            ]
+        })
+        res.status(201).json(postCompleto)
+    } catch (error) {
+        await transaction.rollback()
+        throw error
+    }
 }
 
 
