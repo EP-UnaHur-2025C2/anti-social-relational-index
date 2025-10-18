@@ -30,7 +30,7 @@ UnaHur Anti-Social Net es una red social que permite a los usuarios compartir po
 | Entidad       | Descripción                                                                 |
 |---------------|-----------------------------------------------------------------------------|
 | **User**      | Usuario del sistema. `username` debe ser único.                             |
-| **Post**      | Publicación con descripción obligatoria y fecha. Puede tener imágenes.      |
+| **Post**      | Publicación con descripción obligatoria y fecha. Puede tener imágenes y/o tags.      |
 | **PostImagen**| Imágenes asociadas a un post. Se almacena la URL.                           |
 | **Comment**   | Comentarios en publicaciones. Se ocultan si superan cierta antigüedad.      |
 | **Tag**       | Etiquetas asociadas a publicaciones. Relación muchos a muchos.              |
@@ -60,14 +60,14 @@ UnaHur Anti-Social Net es una red social que permite a los usuarios compartir po
 
 - `GET /user/` - Lista de todos los usuarios
 - `GET /user/:id` - Obtener usuario por ID
-- `PATH user/:id `- Modifica (actualiza) datos del usuario
+- `PATCH user/:id `- Modifica (actualiza) datos del usuario
 - `DELETE /user/:id`- Elimina la cuenta del ususario
 # Rutas de contenido de usuario:
 - `GET /user/:id/posts`- Obtener todos los post creados por el usuario con id
 - `GET /user/:id/comments`- Obtener todos los comentarios por un usuario especifico
 # Rutas de acciones sociales:
-- `POST /users/:id/follow/:idASeguir `- Seguir a otro usuario
-- `DELETE /users/:id/unfollow/:idSeguido` - Deja de seguir al usuario especificado
+- `POST /user/:id/follow/:idASeguir `- Seguir a otro usuario
+- `DELETE /user/:id/unfollow/:idSeguido` - Deja de seguir al usuario especificado
 - `GET /user/:id/seguidores`- Obtiene lista de seguidores
 - `GET /user/:id/seguidos`- Obtiene lista de seguidos
 - `GET /user/:id/seguidores/count`- Obtener la cantidad de seguidores
@@ -75,37 +75,48 @@ UnaHur Anti-Social Net es una red social que permite a los usuarios compartir po
 
 ### 📝 Posts
 
-- `GET /posts` - Obtener todos los posteos
-- `GET /post/:id` - Obtener un post especifico por id
-- `POST /posts/` - Crear nuevo post
-- `PATH /posts/:id` - Modifica (actualiza) un post por id
-- `DELETE /posts/:id` - Eliminar post
+- `GET /post` - Obtener todos los posteos
+- `GET /post/:id` - Obtener un post específico por id
+- `POST /post/` - Crear nuevo post
+- `PATCH /post/:id` - Modifica (actualiza) un post por id
+- `DELETE /post/:id` - Eliminar post
+- `GET /post/:id/imagenes` - Obtener las imágenes de un post específico por id
+- `POST /post/:id/imagenes` - Agregar una imagen a un post específico
+- `DELETE /post/:id/imagenes/:idImagen` - Eliminar una imagen de un post
+- `GET /post/:id/tags` - Obtener los tags de un post
+- `POST /post/:id/tag` - Agregar un tag a un post
+- `DELETE /post/:id/tag/:idTag` - Eliminar un tag de un post
+- `GET /post/tag/:id` - Obtener posteos según un tag específico
+- `POST /post/create-imagenes` - Crear post con imágenes
+- `POST /post/create-tags` - Crear post con tags
+- `POST /post/create-completo` - Crear post con imágenes y tags
+- `GET /post/:id/comments` - Obtener comentarios de un post
+- `GET /post/:id/comments/lazy` - Obtener los primeros 10 comentarios de un post
+- `GET /post/user/:id/feed` - Obtener el feed de un usuario (posteos de sus seguidos)
 
 ### 💬 Comentarios
 - `GET /comment/`- Lista de todos los comentarios 
 - `GET /comment/:id`- Otener un comentario especifico
 - `POST /comment/`- Crea un nuevo comentario
 - `PATCH	/comment/:id`- Modificar (actualizar) el comentario
-- `DELETE	/comment/:id`- Eliminar (borrar) un comentario
+- `DELETE /comment/:id`- Eliminar (borrar) un comentario
 
 ### 🏷 Etiquetas
-- `GET	/tag/`- Obtener la lista de todas las etiquetas
-- `GET	/tag/:id`- Obtener una etiqueta especifica
-- `POST	/tag/`- Crear una nueva etiqueta
+- `GET /tag/`- Obtener la lista de todas las etiquetas
+- `GET /tag/:id`- Obtener una etiqueta especifica
+- `POST /tag/`- Crear una nueva etiqueta
 - `PATCH	/tag/:id`- Modificar una etiqueta
-- `DELETE	/tag/:id`- Eliminar (borrar) una ruta
+- `DELETE /tag/:id`- Eliminar (borrar) una ruta
 
 ### 🔑 Autenticación
-- `POST	/auth/login`- Iniciar sesión. Si es correcta devuelve un Token
-- `/auth/register`- Crear nuevo usuario (Registro, con todos sus datos) 
+- `POST /auth/login`- Iniciar sesión. Si es correcta devuelve un Token
+- `POST /auth/register`- Crear nuevo usuario (Registro, con todos sus datos) 
 
 ---
 
 ## 🎁 Bonus Implementados
 
 - ✅ **Relaciones de seguimiento entre usuarios** (Seguidores/Siguiendo).
-- ✅ **Subida y descarga de imágenes:** Las imágenes enviadas por URL se descargan, validan y almacenan localmente.
-- ✅ **Caché con Redis**: para almacenar temporalmente comentarios y optimizar lectura de datos poco cambiantes.
 - ✅**Autenticación y Autorización por JWT**: Se implementó un sistema de JSON Web Tokens JWT para garantizar que todas las rutas de recursos estén protegidas y solo sean accesibles por usuarios válidos y verificados.
 
 ---
@@ -113,7 +124,9 @@ UnaHur Anti-Social Net es una red social que permite a los usuarios compartir po
 ## 🚀 Ejecución del Proyecto
 
 1. Clonar repositorio:
+
    git clone https://github.com/EP-UnaHur-2025C2/anti-social-relational-index.git
+
    cd anti-social-relational-index
 
 
@@ -121,12 +134,7 @@ UnaHur Anti-Social Net es una red social que permite a los usuarios compartir po
    
    npm i
 
-
-3. Levantar servicios con Docker:
-   
-   docker-compose up
-   ```
-4. Iniciar servidor:
+3. Iniciar servidor:
    
    npm run dev
    
@@ -135,5 +143,12 @@ UnaHur Anti-Social Net es una red social que permite a los usuarios compartir po
 
 ## 📚 Documentación
 
-- Swagger disponible en: `http://localhost:3001/doc/`
+- Swagger disponible en el localhost local (definido por variable de entorno o 3001) `/doc`
 - Colección de Postman en: 
+
+---
+
+## Aclaraciones
+- La cantidad de meses de visualización de los comentarios y el puerto del servidor se configuran mediante variables de entorno.
+- La entidad PostImagen no posee un CRUD independiente, ya que sus operaciones son gestionadas a través de la entidad Post, de la que depende directamente.
+- La documentación de la API se generó automáticamente utilizando Swagger UI y Swagger Autogen, y luego fue convertida manualmente al formato YAML.
