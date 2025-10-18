@@ -29,9 +29,9 @@ paths:
             type: object
             properties:
               username:
-                example: any
+                example: "pepe"
               password:
-                example: any
+                example: "contraseña"
       responses:
         "200":
           description: OK
@@ -51,11 +51,11 @@ paths:
             type: object
             properties:
               username:
-                example: any
+                example: "pepe"
               email:
-                example: any
+                example: "pepe@gmail.com"
               password:
-                example: any
+                example: "contraseña"
       responses:
         "201":
           description: Created
@@ -85,6 +85,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -103,17 +104,18 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
         - name: body
           in: body
           schema:
             type: object
             properties:
               username:
-                example: any
+                example: "juan"
               email:
-                example: any
+                example: "juan@gmail.com"
               password:
-                example: any
+                example: "contra123"
       responses:
         "200":
           description: OK
@@ -132,6 +134,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -151,6 +154,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -170,6 +174,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -189,10 +194,12 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
         - name: idASeguir
           in: path
           required: true
           type: string
+          default: "2"
       responses:
         "201":
           description: Created
@@ -214,10 +221,12 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
         - name: idSeguido
           in: path
           required: true
           type: string
+          default: "2"
       responses:
         "200":
           description: OK
@@ -239,6 +248,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -258,6 +268,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -277,6 +288,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -296,6 +308,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -328,7 +341,7 @@ paths:
             type: object
             properties:
               texto:
-                example: any
+                example: "mi primer post"
       responses:
         "201":
           description: Created
@@ -348,6 +361,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -368,15 +382,16 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
         - name: body
           in: body
           schema:
             type: object
             properties:
               postId:
-                example: any
+                example: 1
               texto:
-                example: any
+                example: "edición de post"
       responses:
         "200":
           description: OK
@@ -399,13 +414,7 @@ paths:
           in: path
           required: true
           type: string
-        - name: body
-          in: body
-          schema:
-            type: object
-            properties:
-              postId:
-                example: any
+          default: "1"
       responses:
         "200":
           description: OK
@@ -427,6 +436,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -447,15 +457,16 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
         - name: body
           in: body
           schema:
             type: object
             properties:
               postId:
-                example: any
+                example: 1
               url:
-                example: any
+                example: "http://imagen.com"
       responses:
         "200":
           description: OK
@@ -479,10 +490,12 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
         - name: idImagen
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -504,6 +517,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -525,15 +539,16 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
         - name: body
           in: body
           schema:
             type: object
             properties:
               postId:
-                example: any
+                example: 1
               nombre:
-                example: any
+                example: "vacaciones"
       responses:
         "200":
           description: OK
@@ -557,10 +572,12 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
         - name: idTag
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -582,6 +599,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -603,9 +621,9 @@ paths:
             type: object
             properties:
               texto:
-                example: any
+                example: "mi primer post con imagen"
               imagenes:
-                example: any
+                example: [{url: "http://imagen1.com"}, {url: "http://imagen2.com"}]
       responses:
         "201":
           description: Created
@@ -627,9 +645,9 @@ paths:
             type: object
             properties:
               texto:
-                example: any
+                example: "mi primer post con tags"
               tags:
-                example: any
+                example: [{nombre: "vacaciones"}, {nombre: "naturaleza"}]
       responses:
         "201":
           description: Created
@@ -651,11 +669,11 @@ paths:
             type: object
             properties:
               texto:
-                example: any
+                example: "mi primer post completo"
               imagenes:
-                example: any
+                example: [{url: "http://imagen1.com"}, {url: "http://imagen2.com"}]
               tags:
-                example: any
+                example: [{nombre: "vacaciones"}, {nombre: "naturaleza"}]
       responses:
         "201":
           description: Created
@@ -675,6 +693,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -696,6 +715,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -717,6 +737,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -749,9 +770,9 @@ paths:
             type: object
             properties:
               postId:
-                example: any
+                example: 1
               texto:
-                example: any
+                example: "me gustó tu post"
       responses:
         "201":
           description: Created
@@ -773,6 +794,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -793,17 +815,18 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
         - name: body
           in: body
           schema:
             type: object
             properties:
               usuarioId:
-                example: any
+                example: 1
               postId:
-                example: any
+                example: 1
               texto:
-                example: any
+                example: "edición de comentario"
       responses:
         "200":
           description: OK
@@ -824,6 +847,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -858,7 +882,7 @@ paths:
             type: object
             properties:
               nombre:
-                example: any
+                example: "vacaciones"
       responses:
         "201":
           description: Created
@@ -878,6 +902,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
@@ -898,13 +923,14 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
         - name: body
           in: body
           schema:
             type: object
             properties:
               nombre:
-                example: any
+                example: "viajes"
       responses:
         "200":
           description: OK
@@ -925,6 +951,7 @@ paths:
           in: path
           required: true
           type: string
+          default: "1"
       responses:
         "200":
           description: OK
