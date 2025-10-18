@@ -3,10 +3,10 @@ const user = require('../db/models/user');
 
 const schema= joi.object({
     username : joi.string().min(4).max(30).required().messages({
-        "any.required": "El Nickname es obligatorio",
-        "string.empty": "El Nickname no puede estar vacío",
-        "string.min": "El Nickname debe tener al menos 4 caracteres",
-        "string.max" : "El nickname debe contener como maximo {#limit} de caracteres"
+        "any.required": "El username es obligatorio",
+        "string.empty": "El username no puede estar vacío",
+        "string.min": "El username debe tener al menos 4 caracteres",
+        "string.max" : "El username debe contener como maximo {#limit} de caracteres"
     }),
 
 
@@ -35,9 +35,9 @@ const emailSchema = joi.object({
 
 const schemaPatch = joi.object({
     username : joi.string().min(4).max(30).messages({
-        "string.empty": "El Nickname no puede estar vacío",
-        "string.min": "El Nickname debe tener al menos 4 caracteres",
-        "string.max" : "El nickname debe contener como maximo {#limit} de caracteres"
+        "string.empty": "El username no puede estar vacío",
+        "string.min": "El username debe tener al menos 4 caracteres",
+        "string.max" : "El username debe contener como maximo {#limit} de caracteres"
     }),
 
 
