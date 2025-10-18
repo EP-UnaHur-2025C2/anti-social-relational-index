@@ -3,9 +3,9 @@ const { Router } = require('express');
 
 const { login } = require('../controllers/auth.controller');
 const userControllers = require('../controllers/user.controller');
-const { validationSchema } = require('../middlewares/user.midleware');
+const { validationSchema } = require('../middlewares/user.middleware');
 const { schema } = require('../schemas/user.schema');
-const { validNickname } = require('../middlewares/user.midleware');
+const { validNickname } = require('../middlewares/user.middleware');
 
 const router = Router();
 

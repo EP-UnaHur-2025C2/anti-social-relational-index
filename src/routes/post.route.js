@@ -8,7 +8,7 @@ const {urlSchema, allImagesSchema} = require('../schemas/postimagen.schema');
 const { tagSchema, allTagsSchema } = require('../schemas/tag.schema');
 const { validPostImagen } = require('../middlewares/postImagen.middleware');
 const { validTag } = require('../middlewares/tag.middleware');
-const { validUser } = require('../middlewares/user.midleware');
+const { validUser } = require('../middlewares/user.middleware');
 //validar que el usuario exista!!!
 
 //CRUD

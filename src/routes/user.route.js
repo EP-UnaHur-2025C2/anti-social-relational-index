@@ -1,7 +1,7 @@
 const {Router} = require('express');
 const router = Router();
 const userControllers = require('../controllers/user.controller');
-const {validUser, validationSchema, validUserByParam} = require ('../middlewares/user.midleware')
+const {validUser, validationSchema, validUserByParam} = require ('../middlewares/user.middleware')
 const {invalidId} = require ('../middlewares/generic.middleware');
 const { authenticateToken } = require('../middlewares/authentication');
 
