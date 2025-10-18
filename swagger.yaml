@@ -1,0 +1,965 @@
+swagger: "2.0"
+info:
+  title: UnaHur Anti-Social Net
+  description: API inspirada en plataformas populares que permiten a los usuarios
+    realizar publicaciones y recibir comentarios sobre las mismas.
+  version: 1.0.0
+basePath: /
+tags:
+  - name: Auth
+    description: Operaciones de autenticación
+  - name: User
+    description: Operaciones sobre usuarios
+  - name: Post
+    description: Operaciones sobre publicaciones
+  - name: Comment
+    description: Operaciones sobre comentarios
+  - name: Tag
+    description: Operaciones sobre tags
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      description: ""
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              username:
+                example: "pepe"
+              password:
+                example: "contraseña"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      description: ""
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              username:
+                example: "pepe"
+              email:
+                example: "pepe@gmail.com"
+              password:
+                example: "contraseña"
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "409":
+          description: Conflict
+  /user/:
+    get:
+      tags:
+        - User
+      description: ""
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /user/{id}:
+    get:
+      tags:
+        - User
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+    patch:
+      tags:
+        - User
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              username:
+                example: "juan"
+              email:
+                example: "juan@gmail.com"
+              password:
+                example: "contra123"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+    delete:
+      tags:
+        - User
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /user/{id}/posts:
+    get:
+      tags:
+        - User
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /user/{id}/comments:
+    get:
+      tags:
+        - User
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /user/{id}/follow/{idASeguir}:
+    post:
+      tags:
+        - User
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+        - name: idASeguir
+          in: path
+          required: true
+          type: string
+          default: "2"
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /user/{id}/unfollow/{idSeguido}:
+    delete:
+      tags:
+        - User
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+        - name: idSeguido
+          in: path
+          required: true
+          type: string
+          default: "2"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /user/{id}/seguidos:
+    get:
+      tags:
+        - User
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /user/{id}/seguidores:
+    get:
+      tags:
+        - User
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /user/{id}/seguidores/count:
+    get:
+      tags:
+        - User
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /user/{id}/seguidos/count:
+    get:
+      tags:
+        - User
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /post/:
+    get:
+      tags:
+        - Post
+      description: ""
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+    post:
+      tags:
+        - Post
+      description: ""
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              texto:
+                example: "mi primer post"
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /post/{id}:
+    get:
+      tags:
+        - Post
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+    patch:
+      tags:
+        - Post
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              postId:
+                example: 1
+              texto:
+                example: "edición de post"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+    delete:
+      tags:
+        - Post
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /post/{id}/imagenes:
+    get:
+      tags:
+        - Post
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+    post:
+      tags:
+        - Post
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              postId:
+                example: 1
+              url:
+                example: "http://imagen.com"
+      responses:
+        "200":
+          description: OK
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /post/{id}/imagenes/{idImagen}:
+    delete:
+      tags:
+        - Post
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+        - name: idImagen
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /post/{id}/tags:
+    get:
+      tags:
+        - Post
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /post/{id}/tag:
+    post:
+      tags:
+        - Post
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              postId:
+                example: 1
+              nombre:
+                example: "vacaciones"
+      responses:
+        "200":
+          description: OK
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /post/{id}/tag/{idTag}:
+    delete:
+      tags:
+        - Post
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+        - name: idTag
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /post/tag/{id}:
+    get:
+      tags:
+        - Post
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /post/create-imagenes:
+    post:
+      tags:
+        - Post
+      description: ""
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              texto:
+                example: "mi primer post con imagen"
+              imagenes:
+                example: [{url: "http://imagen1.com"}, {url: "http://imagen2.com"}]
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /post/create-tags:
+    post:
+      tags:
+        - Post
+      description: ""
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              texto:
+                example: "mi primer post con tags"
+              tags:
+                example: [{nombre: "vacaciones"}, {nombre: "naturaleza"}]
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /post/create-completo:
+    post:
+      tags:
+        - Post
+      description: ""
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              texto:
+                example: "mi primer post completo"
+              imagenes:
+                example: [{url: "http://imagen1.com"}, {url: "http://imagen2.com"}]
+              tags:
+                example: [{nombre: "vacaciones"}, {nombre: "naturaleza"}]
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /post/{id}/comments:
+    get:
+      tags:
+        - Post
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /post/{id}/comments/lazy:
+    get:
+      tags:
+        - Post
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /post/user/{id}/feed:
+    get:
+      tags:
+        - Post
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /comment/:
+    get:
+      tags:
+        - Comment
+      description: ""
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+    post:
+      tags:
+        - Comment
+      description: ""
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              postId:
+                example: 1
+              texto:
+                example: "me gustó tu post"
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /comment/{id}:
+    get:
+      tags:
+        - Comment
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+    patch:
+      tags:
+        - Comment
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              usuarioId:
+                example: 1
+              postId:
+                example: 1
+              texto:
+                example: "edición de comentario"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+    delete:
+      tags:
+        - Comment
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /tag/:
+    get:
+      tags:
+        - Tag
+      description: ""
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+    post:
+      tags:
+        - Tag
+      description: ""
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              nombre:
+                example: "vacaciones"
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /tag/{id}:
+    get:
+      tags:
+        - Tag
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+    patch:
+      tags:
+        - Tag
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              nombre:
+                example: "viajes"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+    delete:
+      tags:
+        - Tag
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          default: "1"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error

@@ -11,8 +11,9 @@ const {sequelize} = require("./db/models") //const db = require('./db/models');
 const app = express()
 
 const swaggerUI = require("swagger-ui-express")
-const swaggerDocumentation = require("../swagger.json")
-
+const yaml = require("js-yaml")
+const fs = require("fs")
+const swaggerDocumentation = yaml.load(fs.readFileSync("./swagger.yaml", "utf-8"))
 app.use("/doc", swaggerUI.serve, swaggerUI.setup(swaggerDocumentation))
 
 const PORT = process.env.PORT || 3001
