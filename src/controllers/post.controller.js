@@ -330,7 +330,7 @@ const createPostCompleto = async(req, res) => {
         const imgs = await findOrCreateImages(imagenes || [], newPost.id, transaction)
         await newPost.addImagenes(imgs, { transaction })
 
-        const tagsObj = await findOrCreateTags(tags || [])
+        const tagsObj = await findOrCreateTags(tags || [], newPost.id, transaction)
         await newPost.addTags(tagsObj, { transaction })
 
         await transaction.commit()
