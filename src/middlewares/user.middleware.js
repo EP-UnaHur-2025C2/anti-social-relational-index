@@ -1,4 +1,5 @@
 const {User} = require('../db/models')
+const {errorMapper} = require("./errorMapper")
 
 
 const validUser =async (req, res, next) =>{
@@ -15,7 +16,7 @@ const validUser =async (req, res, next) =>{
 
 
 
-const validNickname = async (req, res, next) => {
+const validUsername = async (req, res, next) => {
     const { username } = req.body;
     if (!username) {
         return res.status(400).json({ message: "El username es requerido" });
@@ -28,7 +29,7 @@ const validNickname = async (req, res, next) => {
     }
 }
 
-const validNicknamePatch = async (req, res, next) => {
+const validUsernamePatch = async (req, res, next) => {
     const { username } = req.body;
     
     if(!username){
@@ -38,7 +39,7 @@ const validNicknamePatch = async (req, res, next) => {
         next()
     }
     else {
-        return res.status(409).json({message: "El nickname ya existe"});
+        return res.status(409).json({message: "El username ya existe"});
     }
 }
 
@@ -69,11 +70,14 @@ const validEmailPatch = async (req, res, next) => {
     }
 }
 
+
+
+
 const validationSchema = (schema) =>{
     return (req, res, next) =>{
         const {error, _} = schema.validate(req.body, {abortEarly:false}) //segura que se recopilen todos los errores de validación a la vez, en lugar de detenerse al encontrar el primero.
         if(error){ //significa que los datos no cumplen con el esquema
-            return res.status(400).json(error)
+            return res.status(400).json({errores: errorMapper(error)})
         }
         next()
     }
@@ -83,7 +87,7 @@ const validationEmailSchema = (schema) =>{
     return (req, res, next) =>{
         const {error, _} = schema.validate(req.body, {abortEarly:false})
         if(error){
-            return res.status(400).json(error)
+            return res.status(400).json({errores: errorMapper(error)})
         }
         next()
     }
@@ -113,4 +117,4 @@ const validFollowUsers = (param1,param2) => {
     }
 }
 
-module.exports = {validUser,validNickname, validEmail ,validationSchema, validationEmailSchema, validUserByParam, validNicknamePatch, validEmailPatch, validFollowUsers};   
+module.exports = {validUser,validUsername, validEmail ,validationSchema, validationEmailSchema, validUserByParam, validUsernamePatch, validEmailPatch, validFollowUsers};   

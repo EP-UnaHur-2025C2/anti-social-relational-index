@@ -2,7 +2,7 @@ const joi = require('joi');
 const { allTagsSchema, tagSchema } = require('./tag.schema');
 const { allImagesSchema, urlSchema } = require('./postimagen.schema');
 
-//? No se repiten aca entre contenidoSchema y creationSchema?
+//? No se repiten aca entre contenidoSchema y creationSchema? --> uno es requerido y otro no (para patch)
 const contenidoSchema= joi.object({
     texto: joi.string().trim().min(10).max(200).messages({
         "string.empty": "El texto no puede estar vacio",      

@@ -1,4 +1,5 @@
 const {Tag} = require('../db/models');
+const {errorMapper} = require("./errorMapper")
 
 const validTag = async (req, res, next) => {
     const tag = await Tag.findByPk(req.params.id);
@@ -20,7 +21,7 @@ const validTagBody = (schema) => {
     return (req, res, next) => {
         const { error } = schema.validate(req.body, { abortEarly: false });
         if (error) {
-            return res.status(400).json(error);
+            return res.status(400).json({errores: errorMapper(error)});
         }
         next();
     }

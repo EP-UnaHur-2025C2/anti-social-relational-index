@@ -206,7 +206,7 @@ const getFirstTenCommentsById = async(req, res) => {
         limit: 10,
         offset: 0,
         order: [["createdAt", "DESC"]],
-        include: {model: User, as: "usuario"},
+        include: {model: User, as: "usuario", attributes: ["id","username"]},
         attributes: ["id", "texto", "createdAt"]
     })
 

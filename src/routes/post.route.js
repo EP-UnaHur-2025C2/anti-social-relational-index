@@ -5,10 +5,10 @@ const {invalidId} = require('../middlewares/generic.middleware');
 const {validPost, validPostBody, validPostImagesBody, validPostByUser} = require('../middlewares/post.middleware');
 const {creationSchema, contenidoSchema, postCompleto, postImagenes, postTags} = require('../schemas/post.schema');
 const {urlSchema} = require('../schemas/postimagen.schema');
-const { tagSchema, allTagsSchema } = require('../schemas/tag.schema');
+const { tagSchema } = require('../schemas/tag.schema');
 const { validPostImagen, validUrl, validUrlArray} = require('../middlewares/postImagen.middleware');
 const { validTag, validTagDelete } = require('../middlewares/tag.middleware');
-const { validUser } = require('../middlewares/user.midleware');
+const { validUser } = require('../middlewares/user.middleware');
 //validar que el usuario exista!!!
 
 //CRUD
