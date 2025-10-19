@@ -395,8 +395,6 @@ paths:
           schema:
             type: object
             properties:
-              postId:
-                example: 1
               texto:
                 example: "edición de post"
       responses:

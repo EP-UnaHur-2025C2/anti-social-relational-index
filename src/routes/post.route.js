@@ -20,7 +20,7 @@ router.delete('/:id',invalidId, validPost, postController.deletePost);
 
 //Imagenes
 router.get('/:id/imagenes', invalidId, validPost, postController.getImagesByPost)
-router.post('/:id/imagenes',invalidId, validPost, validUrl, validPostImagesBody(urlSchema), postController.addNewImageToPost); //validPost y validPostImagesBody(imagesSchema)//se tiene que mandar url
+router.post('/:id/imagenes',invalidId, validPost, validPostImagesBody(urlSchema), validUrl, postController.addNewImageToPost); //validPost y validPostImagesBody(imagesSchema)//se tiene que mandar url
 router.delete('/:id/imagenes/:idImagen',invalidId, validPost, validPostImagen ,postController.deleteImageFromPost);
 
 //Tags
@@ -36,7 +36,7 @@ router.post("/create-completo", validPostBody(postCompleto) ,postController.crea
 
 //Comentarios y Feed de Posts
 router.get('/:id/comments',invalidId, validPost, postController.getCommentsByPost);
-router.get('/:id/comments/lazy', invalidId, validPost, postController.getFirstTenCommentsById)
+router.get('/:id/comments/lazy', invalidId, validPost, postController.getLatestTenCommentsById)
 router.get('/user/:id/feed',invalidId, validUser, postController.getPostsOfFollowedUsers);
 
 module.exports =  router ;  

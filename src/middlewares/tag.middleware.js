@@ -30,7 +30,10 @@ const validTagBody = (schema) => {
 const validTagUnico = async (req, res, next) => {
     const { nombre } = req.body;
    
-    if(!await Tag.findOne({ where: { nombre }})){
+    if (!nombre) {
+        next()
+    }
+    else if(!await Tag.findOne({ where: { nombre }})){
         next()
     }
     else {

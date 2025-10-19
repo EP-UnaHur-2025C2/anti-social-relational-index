@@ -3,12 +3,16 @@ const bcrypt = require('bcrypt');
 
 
 const getUsers = async(req, res) => {
-  const data = await User.findAll({})
+  const data = await User.findAll({
+    attributes: {exclude: ["password"]}
+  })
   res.status(200).json(data)
 }
 
 const getUserById = async (req,res) => {
-  const data = await User.findByPk(req.params.id);
+  const data = await User.findByPk(req.params.id, {
+    attributes: {exclude: ["password"]}
+  });
   res.status(200).json(data);
 };
 
@@ -50,10 +54,7 @@ const updateUser = async (req, res) =>{
 const deleteUser = async (req, res) =>{
   const id = await req.params.id
   const user = await User.findByPk(id)
-  const removed = await user.destroy({where: {
-                id: id,
-              },
-            });
+  const removed = await user.destroy();
   
   res.status(200).json(removed); //lo que eliminó. O: res.status(204).send() y no muestra nada
 }

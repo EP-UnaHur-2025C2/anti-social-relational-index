@@ -1,10 +1,8 @@
 const errorMapper = (error) => {
-    error.details.map((e) => {
-        return {
-            atributo: e.path.join("."),
-            detalle: e.message
-        }
-    })
+    return error.details.map((e) => ({
+        atributo: e.path.join("."),
+        detalle: e.message
+    }))
 }
 
 module.exports = {errorMapper}
