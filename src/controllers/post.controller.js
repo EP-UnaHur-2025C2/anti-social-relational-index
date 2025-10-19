@@ -199,19 +199,19 @@ const getCommentsByPost = async(req, res) => {
 }
 
 //get --> /lazy/:id //muestra los primeros 10 comentarios de un post. Puede ser dinámico con la ruta
-const getFirstTenCommentsById = async(req, res) => {
+const getLatestTenCommentsById = async(req, res) => {
     const id = req.params.id
     let {count, rows} = await Comment.findAndCountAll({
         where: {postId: id}, //solo muestra los visibles
         limit: 10,
         offset: 0,
         order: [["createdAt", "DESC"]],
-        include: {model: User, as: "usuario"},
+        include: {model: User, as: "usuario", attributes: ["id","username"]},
         attributes: ["id", "texto", "createdAt"]
     })
 
     visibles = rows.filter(c => c.visible)
-    resultado = {total: count, primeros_diez_comentarios: visibles}
+    resultado = {total: count, ultimos_diez_comentarios: visibles}
 
     res.status(200).json(resultado)
 }
@@ -364,7 +364,7 @@ module.exports = {getPosts,
     getPostsByTag,
     getTagsByPost,
     getCommentsByPost,
-    getFirstTenCommentsById,
+    getLatestTenCommentsById,
     getPostsOfFollowedUsers,
     createPostWithImages,
     createPostWithTags,

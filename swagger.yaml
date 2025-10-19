@@ -395,8 +395,6 @@ paths:
           schema:
             type: object
             properties:
-              postId:
-                example: 1
               texto:
                 example: "edición de post"
       responses:
@@ -470,8 +468,6 @@ paths:
           schema:
             type: object
             properties:
-              postId:
-                example: 1
               url:
                 example: "http://imagen.com"
       responses:
@@ -552,8 +548,6 @@ paths:
           schema:
             type: object
             properties:
-              postId:
-                example: 1
               nombre:
                 example: "vacaciones"
       responses:
@@ -828,10 +822,6 @@ paths:
           schema:
             type: object
             properties:
-              usuarioId:
-                example: 1
-              postId:
-                example: 1
               texto:
                 example: "edición de comentario"
       responses:

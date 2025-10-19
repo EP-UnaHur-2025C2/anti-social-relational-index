@@ -1,8 +1,30 @@
 const joi = require('joi');
-const { allTagsSchema, tagSchema } = require('./tag.schema');
-const { allImagesSchema, urlSchema } = require('./postimagen.schema');
+const {tagSchema } = require('./tag.schema');
+const { urlSchema } = require('./postimagen.schema');
 
-//? No se repiten aca entre contenidoSchema y creationSchema?
+const textoSchema = joi.string().trim().required().min(10).max(200).messages({
+        "any.required" :"texto es obligatorio",
+        "string.min" : "El contenido debe contener como minimo {#limit} de caracteres",
+        "string.max" : "El contenido debe contener como maximo {#limit} de caracteres",
+        "string.empty": "El texto no puede estar vacio",
+    })
+
+const imagenesSchema = joi.array().min(1).required().items(urlSchema).messages({
+        "any.required": "Las imágenes son obligatorias",
+        "array.min": "El arreglo de imágenes no puede estar vacío",
+        "array.base": "Las imágenes que se pasan deben ser un arreglo",
+    })
+
+const createTagsSchema = joi.array().min(1).required().items(tagSchema).messages({
+        "any.required": "Las etiquetas son obligatorias",
+        "array.min": "El arreglo de etiquetas no puede estar vacío",
+        "array.base": "Las etiquetas que se pasan deben ser un arreglo",
+
+    })    
+
+
+
+//? No se repiten aca entre contenidoSchema y creationSchema? --> uno es requerido y otro no (para patch)
 const contenidoSchema= joi.object({
     texto: joi.string().trim().min(10).max(200).messages({
         "string.empty": "El texto no puede estar vacio",      
@@ -12,12 +34,7 @@ const contenidoSchema= joi.object({
 });
 
 const creationSchema = joi.object({
-    texto: joi.string().trim().required().min(10).max(200).messages({
-        "any.required" :"texto es obligatorio",
-        "string.min" : "El contenido debe contener como minimo {#limit} de caracteres",
-        "string.max" : "El contenido debe contener como maximo {#limit} de caracteres",
-        "string.empty": "El texto no puede estar vacio",
-    }),
+    texto: textoSchema,
 
     //*No es necesario que venga el userId porque se lo toma del token
     //*el post se crea para el usuario que hizo la peticion
@@ -31,62 +48,29 @@ const creationSchema = joi.object({
     
 });
 
-const postImagenes = joi.object({
-    texto: joi.string().trim().required().min(10).max(200).messages({
-        "any.required" :"texto es obligatorio",
-        "string.min" : "El contenido debe contener como minimo {#limit} de caracteres",
-        "string.max" : "El contenido debe contener como maximo {#limit} de caracteres",
-        "string.empty": "El texto no puede estar vacio",
-    }),
 
-    imagenes: joi.array().min(1).required().items(urlSchema).messages({
-        "any.required": "Las imágenes son obligatorias",
-        "array.min": "El arreglo de imágenes no puede estar vacío",
-        "array.base": "Las imágenes que se pasan deben ser un arreglo",
-        
-    })
+
+const postImagenes = joi.object({
+    texto: textoSchema,
+
+    imagenes: imagenesSchema
 });
 
 
 const postCompleto = joi.object({
-    texto: joi.string().trim().required().min(10).max(200).messages({
-        "any.required" :"texto es obligatorio",
-        "string.min" : "El contenido debe contener como minimo {#limit} de caracteres",
-        "string.max" : "El contenido debe contener como maximo {#limit} de caracteres",
-        "string.empty": "El texto no puede estar vacio",
-    }),
+    texto: textoSchema,
 
-    imagenes: joi.array().min(1).required().items(urlSchema).messages({
-        "any.required": "Las imágenes son obligatorias",
-        "array.min": "El arreglo de imágenes no puede estar vacío",
-        "array.base": "Las imágenes que se pasan deben ser un arreglo",
-        
-    }),
+    imagenes: imagenesSchema,
     
-    tags: joi.array().min(1).required().items(tagSchema).messages({
-        "any.required": "Las etiquetas son obligatorias",
-        "array.min": "El arreglo de etiquetas no puede estar vacío",
-        "array.base": "Las etiquetas que se pasan deben ser un arreglo",
-
-    })
+    tags: createTagsSchema
 });
 
 
 
 const postTags = joi.object({
-    texto: joi.string().trim().required().min(10).max(200).messages({
-        "any.required" :"texto es obligatorio",
-        "string.min" : "El contenido debe contener como minimo {#limit} de caracteres",
-        "string.max" : "El contenido debe contener como maximo {#limit} de caracteres",
-        "string.empty": "El texto no puede estar vacio",
-    }),
+    texto: textoSchema,
 
-    tags: joi.array().min(1).required().items(tagSchema).messages({
-        "any.required": "Las etiquetas son obligatorias",
-        "array.min": "El arreglo de etiquetas no puede estar vacío",
-        "array.base": "Las etiquetas que se pasan deben ser un arreglo",
-
-    })
+    tags: createTagsSchema
 });
 
 

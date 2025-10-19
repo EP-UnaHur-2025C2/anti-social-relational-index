@@ -18,6 +18,5 @@ const tagPatchSchema = joi.object({
     })
 })
 
-const allTagsSchema = joi.array().items(tagSchema)
 
-module.exports = { tagSchema, tagPatchSchema,allTagsSchema }
+module.exports = { tagSchema, tagPatchSchema}

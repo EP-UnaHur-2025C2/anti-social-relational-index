@@ -11,15 +11,11 @@ const validPostImagen = async (req, res, next) => {
 
 const validUrl = async (req, res, next) => {
     const { url } = req.body;
-    if (!url) {
-        return res.status(400).json({ message: "La URL es requerida" });
-    }
-    if(!await PostImagen.findOne({ where: { url }})){
-        next()
-    }
-    else {
+   
+    if(await PostImagen.findOne({ where: { url }})){
         return res.status(409).json({message: "La URL ya existe"});
     }
+    next()
 }
 
 const validUrlArray = async (req, res, next) => {

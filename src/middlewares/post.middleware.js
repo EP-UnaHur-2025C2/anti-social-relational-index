@@ -1,7 +1,8 @@
 const { Post } = require('../db/models');
+const {errorMapper} = require("./errorMapper")
 
 const validPost = async (req, res, next) => {
-    const post = await Post.findByPk(req.body.postId || req.params.id);
+    const post = await Post.findByPk(req.params.id || req.body.postId);
     if (!post) {
         return res.status(404).json({ message: 'Post no encontrado' });
     }
@@ -22,7 +23,7 @@ const validPostBody = (schema) => {
     return (req, res, next) => {
         const { error } = schema.validate(req.body, { abortEarly: false });
         if (error) {
-            return res.status(400).json(error);
+            return res.status(400).json({errores: errorMapper(error)});
         }
         next();
     }
@@ -32,7 +33,7 @@ const validPostImagesBody = (schema) => {
     return (req, res, next) => {
         const { error } = schema.validate(req.body, { abortEarly: false });
         if (error) {
-            return res.status(400).json(error);
+            return res.status(400).json({errores: errorMapper(error)});
         }
         next();
     }
