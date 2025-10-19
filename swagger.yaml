@@ -4,6 +4,11 @@ info:
   description: API inspirada en plataformas populares que permiten a los usuarios
     realizar publicaciones y recibir comentarios sobre las mismas.
   version: 1.0.0
+securityDefinitions:
+  BearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
 basePath: /
 tags:
   - name: Auth
@@ -16,6 +21,8 @@ tags:
     description: Operaciones sobre comentarios
   - name: Tag
     description: Operaciones sobre tags
+security:
+  - BearerAuth: []
 paths:
   /auth/login:
     post:

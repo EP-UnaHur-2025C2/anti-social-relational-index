@@ -8,6 +8,14 @@ const validTag = async (req, res, next) => {
     next();
 }
 
+const validTagDelete = async (req, res, next) => {
+    const tag = await Tag.findByPk(req.params.idTag);
+    if (!tag) {
+        return res.status(404).json({ message: 'Tag no encontrado' });
+    }
+    next();
+}
+
 const validTagBody = (schema) => {
     return (req, res, next) => {
         const { error } = schema.validate(req.body, { abortEarly: false });
@@ -18,4 +26,15 @@ const validTagBody = (schema) => {
     }
 }
 
-module.exports = { validTag, validTagBody };
+const validTagUnico = async (req, res, next) => {
+    const { nombre } = req.body;
+   
+    if(!await Tag.findOne({ where: { nombre }})){
+        next()
+    }
+    else {
+        return res.status(409).json({message: "El Tag ya existe"});
+    }
+}
+
+module.exports = { validTag, validTagBody, validTagUnico, validTagDelete };

@@ -104,9 +104,9 @@ const addNewImageToPost = async(req, res) => {
 //delete --> /:id/imgs/:idImage
 const deleteImageFromPost = async(req, res) => {
     const idPost = req.params.id
-    const idImagen = req.params.idImagen
+    const idImg = req.params.idImagen
     const post = await Post.findByPk(idPost)
-    const imagen = await PostImagen.findByPk(idImagen)
+    const imagen = await PostImagen.findByPk(idImg)
 
     await imagen.destroy()
 

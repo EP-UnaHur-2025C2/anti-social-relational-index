@@ -9,7 +9,7 @@ const urlSchema=
       })
 });
 
-const allImagesSchema = joi.array().items(urlSchema);
 
 
-module.exports={urlSchema, allImagesSchema}
+
+module.exports={urlSchema}

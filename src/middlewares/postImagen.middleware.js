@@ -9,4 +9,31 @@ const validPostImagen = async (req, res, next) => {
     next();
 }
 
-module.exports = { validPostImagen }
+const validUrl = async (req, res, next) => {
+    const { url } = req.body;
+    if (!url) {
+        return res.status(400).json({ message: "La URL es requerida" });
+    }
+    if(!await PostImagen.findOne({ where: { url }})){
+        next()
+    }
+    else {
+        return res.status(409).json({message: "La URL ya existe"});
+    }
+}
+
+const validUrlArray = async (req, res, next) => {
+    const { imagenes } = req.body;
+    if (!imagenes || !Array.isArray(imagenes)) {
+        return res.status(400).json({ message: "Las URLs son requeridas" });
+    }
+    for (const obj of imagenes) {
+        const { url } = obj;
+        if (await PostImagen.findOne({ where: { url }})) {
+            return res.status(409).json({ message: `La URL ${url} ya existe` });
+        }
+    }
+    next();
+}
+
+module.exports = { validPostImagen, validUrl, validUrlArray }

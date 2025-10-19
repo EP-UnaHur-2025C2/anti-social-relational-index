@@ -144,7 +144,7 @@ UnaHur Anti-Social Net es una red social que permite a los usuarios compartir po
 ## 📚 Documentación
 
 - Swagger está disponible en el entorno local en `/doc`(puerto definido por variable de entorno o 3001 por defecto).
-- Colección de Postman en: 
+- Colección de Postman en: https://ivanherold.postman.co/workspace/Ivan-Herold's-Workspace~4583ca7e-0690-455f-87ef-fd19b8005372/collection/44128094-e0aac167-e0fb-4db2-9364-7759505bff06?action=share&creator=44128094 
 
 ---
 

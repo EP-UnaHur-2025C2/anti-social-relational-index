@@ -54,4 +54,20 @@ const schemaPatch = joi.object({
     })
 })
 
-module.exports={schema, emailSchema, schemaPatch}
+const schemaLogin = joi.object({
+    username : joi.string().min(4).max(30).required().messages({
+        "any.required": "El Nickname es obligatorio",
+        "string.empty": "El Nickname no puede estar vacío",
+        "string.min": "El Nickname debe tener al menos 4 caracteres",
+        "string.max" : "El nickname debe contener como maximo {#limit} de caracteres"
+    }),
+
+    password: joi.string().min(4).max(30).required().messages({
+        "any.required": "La contraseña es obligatoria",
+        "string.empty": "La contraseña no puede estar vacía",
+        "string.min": "La contraseña debe tener al menos 4 caracteres",
+        "string.max" : "La contraseña debe contener como maximo {#limit} de caracteres"
+    })
+});
+
+module.exports={schema, emailSchema, schemaPatch, schemaLogin};

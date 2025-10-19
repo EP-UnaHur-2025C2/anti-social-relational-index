@@ -1,7 +1,7 @@
 const {Router} = require('express');
 const router = Router();
 const userControllers = require('../controllers/user.controller');
-const {validUser, validationSchema, validUserByParam} = require ('../middlewares/user.midleware')
+const {validUser, validationSchema, validUserByParam, validNicknamePatch, validEmailPatch, validFollowUsers} = require ('../middlewares/user.midleware')
 const {invalidId} = require ('../middlewares/generic.middleware');
 const { authenticateToken } = require('../middlewares/authentication');
 
@@ -13,7 +13,7 @@ const {schema, schemaPatch} = require('../schemas/user.schema')
 router.get("/", userControllers.getUsers)  //*Funciona
 router.get('/:id',invalidId, validUser, userControllers.getUserById); //*Funciona
 //router.post('/', validationSchema(schema), validNickname, userControllers.createUser); // !Este fue movido a auth para register
-router.patch('/:id',invalidId, validUser, validationSchema(schemaPatch), userControllers.updateUser); //agregado del schema a las rutas y del validationSchema(schema)
+router.patch('/:id',invalidId, validUser, validNicknamePatch, validEmailPatch, validationSchema(schemaPatch), userControllers.updateUser); //agregado del schema a las rutas y del validationSchema(schema)
 router.delete('/:id',invalidId, validUser, userControllers.deleteUser);
 
 //Relaciones
@@ -21,8 +21,8 @@ router.get('/:id/posts',invalidId, validUser, userControllers.getPostsByUser);
 router.get('/:id/comments',invalidId, validUser, userControllers.getCommentsByUser);
 
 //Follow - Unfollow
-router.post('/:id/follow/:idASeguir',invalidId, validUser, validUserByParam("idASeguir"),userControllers.followUser);// bonus
-router.delete('/:id/unfollow/:idSeguido',invalidId, validUser, validUserByParam("idSeguido"), userControllers.unfollowUser);// bonus
+router.post('/:id/follow/:idASeguir',invalidId, validUser, validUserByParam("idASeguir"),validFollowUsers("id", "idASeguir"), userControllers.followUser);// bonus
+router.delete('/:id/unfollow/:idSeguido',invalidId, validUser, validUserByParam("idSeguido"), validFollowUsers("id", "idSeguido"),userControllers.unfollowUser);// bonus
 
 //Seguidores - Seguidos
 router.get('/:id/seguidos',invalidId, validUser, userControllers.getSeguidos);

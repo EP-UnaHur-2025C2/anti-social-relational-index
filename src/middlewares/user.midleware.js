@@ -3,7 +3,7 @@ const {User} = require('../db/models')
 
 const validUser =async (req, res, next) =>{
 
-    if(await User.findOne({where:{id:req.user.id}})){
+    if(await User.findOne({where:{id:req.params.id}})){
         next()
     }
         
@@ -12,6 +12,8 @@ const validUser =async (req, res, next) =>{
     }
     
 }
+
+
 
 const validNickname = async (req, res, next) => {
     const { username } = req.body;
@@ -26,12 +28,40 @@ const validNickname = async (req, res, next) => {
     }
 }
 
+const validNicknamePatch = async (req, res, next) => {
+    const { username } = req.body;
+    
+    if(!username){
+        next()
+    }
+    else if(!await User.findOne({ where: { username }})){
+        next()
+    }
+    else {
+        return res.status(409).json({message: "El nickname ya existe"});
+    }
+}
+
 const validEmail = async (req, res, next) => {
     const { email } = req.body;
     if (!email) {
         return res.status(400).json({ message: "El email es requerido" });
     }
     if(!await User.findOne({ where: { email }})){
+        next()
+    }
+    else {
+        return res.status(409).json({message: "El email ya se encuentra registrado"});
+    }
+}
+
+const validEmailPatch = async (req, res, next) => {
+    const { email } = req.body;
+
+    if(!email){
+        next()
+    }
+    else if(!await User.findOne({ where: { email }})){
         next()
     }
     else {
@@ -70,5 +100,17 @@ const validUserByParam = (parametro) => {
     }
 }
 
+const validFollowUsers = (param1,param2) => {
+    return async(req, res, next) => {
+        const id1 = req.params[param1]
+        const id2 = req.params[param2]
 
-module.exports = {validUser,validNickname, validEmail ,validationSchema, validationEmailSchema, validUserByParam};   
+        if(id1 === id2){
+            return res.status(400).json({message: "Bad request: Acción inválida sobre el mismo usuario"})
+        }
+
+        next()
+    }
+}
+
+module.exports = {validUser,validNickname, validEmail ,validationSchema, validationEmailSchema, validUserByParam, validNicknamePatch, validEmailPatch, validFollowUsers};   
