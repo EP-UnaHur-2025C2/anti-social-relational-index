@@ -32,7 +32,7 @@ router.delete('/:id/tag/:idTag', invalidId, validPost, validPostByUser, validTag
 router.get("/tag/:id", validTag, postController.getPostsByTag);
 router.post("/create-imagenes",  validPostBody(postImagenes),validUrlArray, postController.createPostWithImages);
 router.post("/create-tags", validPostBody(postTags) ,postController.createPostWithTags);
-router.post("/create-completo", validPostBody(postCompleto) ,postController.createPostCompleto);
+router.post("/create-completo", validPostBody(postCompleto), validUrlArray,postController.createPostCompleto);
 
 //Comentarios y Feed de Posts
 router.get('/:id/comments',invalidId, validPost, postController.getCommentsByPost);
