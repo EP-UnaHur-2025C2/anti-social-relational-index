@@ -6,7 +6,7 @@ require("dotenv").config()
 const {userRoute,postRoute, commentRoute,tagRoute , authRoute} = require("./routes/index.js")
 
 const express = require("express")
-const {sequelize} = require("./db/models") //const db = require('./db/models');
+const {sequelize} = require("./db/models") 
 
 const app = express()
 

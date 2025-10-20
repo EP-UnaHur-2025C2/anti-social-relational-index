@@ -24,7 +24,7 @@ const createTagsSchema = joi.array().min(1).required().items(tagSchema).messages
 
 
 
-//? No se repiten aca entre contenidoSchema y creationSchema? --> uno es requerido y otro no (para patch)
+
 const contenidoSchema= joi.object({
     texto: joi.string().trim().min(10).max(200).messages({
         "string.empty": "El texto no puede estar vacio",      
@@ -35,17 +35,6 @@ const contenidoSchema= joi.object({
 
 const creationSchema = joi.object({
     texto: textoSchema,
-
-    //*No es necesario que venga el userId porque se lo toma del token
-    //*el post se crea para el usuario que hizo la peticion
-    //*si se quisiera crear un post para otro usuario, ahi si tendria sentido validar que el userId exista
-    
-    // usuarioId: joi.number().integer().required().messages({
-    //     "any.required" :"el id de usuario es obligatorio",
-    //     "number.base": "El id de usuario debe ser un número",
-    //     "number.integer": "El id de usuario debe ser un número entero"
-    // })
-    
 });
 
 

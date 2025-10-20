@@ -16,28 +16,22 @@ const getUserById = async (req,res) => {
   res.status(200).json(data);
 };
 
-const getUserByUsername = async (req, res) => {
-  const { username } = req.params;
-  const user = await User.findOne({ where: { username } });
-  res.status(200).json(user);
-};
 
 
 const createUser = async (req, res) => {
   const {username, email, password} = req.body
 
-  //* Se hashea la contraseña antes de guardarla, para no dejarla como texto plano
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const newUser = await User.create({username, email, password: hashedPassword})
   res.status(201).json(newUser)
 };
 
-// NO va try / catch porque eso lo manejan los middlewares / schemas (responsabilidad unica)
+
 const updateUser = async (req, res) =>{
   const id = req.params.id
   
-  //*Se encarga de que si el atributo a cambiar sea el password se hashee
+  
   let {username, email, password} = req.body;
   if (password) {
     password = await bcrypt.hash(password, 10);
@@ -56,10 +50,10 @@ const deleteUser = async (req, res) =>{
   const user = await User.findByPk(id)
   const removed = await user.destroy();
   
-  res.status(200).json(removed); //lo que eliminó. O: res.status(204).send() y no muestra nada
+  res.status(200).json(removed); 
 }
 
-// get --> /:id/posts
+
 const getPostsByUser = async(req, res) => {
   const id = req.params.id
   const posts = await Post.findAll({
@@ -74,7 +68,7 @@ const getPostsByUser = async(req, res) => {
   res.status(200).json(posts)
 }
 
-//get --> /:id/comments
+
 const getCommentsByUser = async(req, res) => {
   const id = req.params.id
   let comments = await Comment.findAll({
@@ -90,7 +84,7 @@ const getCommentsByUser = async(req, res) => {
 }
 
 
-// NO va try / catch porque eso lo manejan los middlewares / schemas (responsabilidad unica)
+
 const followUser = async (req, res)=>{
   const user = await User.findByPk(req.params.id)
   const userASeguir = await User.findByPk(req.params.idASeguir)
@@ -130,7 +124,7 @@ const getSeguidos = async(req, res) => {
 const getSeguidores = async(req, res) => {
   const id = req.params.id
   const user = await User.findByPk(id)
-  // traer también la fecha de la relación (createdAt en la tabla intermedia UsuarioSeguidor)
+  
   const seguidoresRaw = await user.getSeguidores({
     attributes: ["id", "username"],
     through: { attributes: ['createdAt'] }

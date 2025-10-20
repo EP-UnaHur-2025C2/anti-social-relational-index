@@ -9,7 +9,7 @@ const { validUsername } = require('../middlewares/user.middleware');
 
 const router = Router();
 
-router.post('/login',validationSchema(schemaLogin), login);   //*Funciona
-router.post('/register',validationSchema(schema), validUsername,validEmail ,userControllers.createUser); //*Funciona
+router.post('/login',validationSchema(schemaLogin), login);  
+router.post('/register',validationSchema(schema), validUsername,validEmail ,userControllers.createUser); 
 
 module.exports = router;

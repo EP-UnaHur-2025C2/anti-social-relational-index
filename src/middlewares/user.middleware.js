@@ -75,14 +75,14 @@ const validEmailPatch = async (req, res, next) => {
 
 const validationSchema = (schema) =>{
     return (req, res, next) =>{
-        const {error, _} = schema.validate(req.body, {abortEarly:false}) //segura que se recopilen todos los errores de validación a la vez, en lugar de detenerse al encontrar el primero.
-        if(error){ //significa que los datos no cumplen con el esquema
+        const {error, _} = schema.validate(req.body, {abortEarly:false}) 
+        if(error){ 
             return res.status(400).json({errores: errorMapper(error)})
         }
         next()
     }
 }
-//es la = q arriba pero para email -> 
+ 
 const validationEmailSchema = (schema) =>{
     return (req, res, next) =>{
         const {error, _} = schema.validate(req.body, {abortEarly:false})

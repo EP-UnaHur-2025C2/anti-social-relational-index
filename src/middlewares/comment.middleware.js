@@ -1,4 +1,4 @@
-const {Comment, User, Post} = require('../db/models');
+const {Comment} = require('../db/models');
 const {errorMapper} = require("./errorMapper")
 
 const validComment = async (req, res, next) => {

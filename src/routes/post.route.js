@@ -9,23 +9,23 @@ const { tagSchema } = require('../schemas/tag.schema');
 const { validPostImagen, validUrl, validUrlArray} = require('../middlewares/postImagen.middleware');
 const { validTag, validTagDelete } = require('../middlewares/tag.middleware');
 const { validUser } = require('../middlewares/user.middleware');
-//validar que el usuario exista!!!
+
 
 //CRUD
 router.get("/", postController.getPosts);
-router.get('/:id',invalidId, validPost, postController.getPostById); //agregado del validPost
-router.post('/', validPostBody(creationSchema), postController.createPost); //agregado del schema a las rutas y del validPostBody(creationSchema)
-router.patch('/:id',invalidId,validPost, validPostByUser, validPostBody(contenidoSchema), postController.updatePost); //agregado del schema a las rutas, validPPost del validPostBody(contenidoSchema)
+router.get('/:id',invalidId, validPost, postController.getPostById); 
+router.post('/', validPostBody(creationSchema), postController.createPost); 
+router.patch('/:id',invalidId,validPost, validPostByUser, validPostBody(contenidoSchema), postController.updatePost); 
 router.delete('/:id',invalidId, validPost, postController.deletePost);
 
 //Imagenes
 router.get('/:id/imagenes', invalidId, validPost, postController.getImagesByPost)
-router.post('/:id/imagenes',invalidId, validPost, validPostImagesBody(urlSchema), validUrl, postController.addNewImageToPost); //validPost y validPostImagesBody(imagesSchema)//se tiene que mandar url
+router.post('/:id/imagenes',invalidId, validPost, validPostImagesBody(urlSchema), validUrl, postController.addNewImageToPost); 
 router.delete('/:id/imagenes/:idImagen',invalidId, validPost, validPostImagen ,postController.deleteImageFromPost);
 
 //Tags
 router.get('/:id/tags', invalidId, validPost, postController.getTagsByPost)
-router.post('/:id/tag',invalidId, validPost, validPostBody(tagSchema), postController.addTagToPost); //verificar que el nombre del tag venga en el body (middleware o schema)
+router.post('/:id/tag',invalidId, validPost, validPostBody(tagSchema), postController.addTagToPost);
 router.delete('/:id/tag/:idTag', invalidId, validPost, validTagDelete, postController.deleteTagFromPost);
 
 //Filtros

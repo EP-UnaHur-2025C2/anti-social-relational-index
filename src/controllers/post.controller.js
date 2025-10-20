@@ -2,9 +2,6 @@ const { where, or } = require("sequelize")
 const {Post, PostImagen, Tag, Comment, User} = require("../db/models")
 const { Op } = require("sequelize")
 
-// try / catch ; ver middlewares
-
-//app.use("/post")
 
 const includePostSinComentarios = [
     {model: User, as: "usuario", attributes: ["username"]},
@@ -39,28 +36,28 @@ const getPostCompletoById = async(id) => {
 
 
 
-//get --> /
+
 const getPosts = async (req, res) => {
     const posts = await getPostsSinComentarios()
     res.status(200).json(posts)
 }
 
-//get --> /:id
+
 const getPostById = async(req, res) => {
     const id = req.params.id
     const post = await getPostCompletoById(id)
     res.status(200).json(post)
 }
 
-//post --> /
+
 const createPost = async(req, res) => {
-    const {texto} = req.body //para que no se pueda mandar el usuarioId por body
-    const data = {texto, usuarioId: req.user.id} //el id del usuario autenticado
+    const {texto} = req.body 
+    const data = {texto, usuarioId: req.user.id} 
     const newPost = await Post.create(data)
     res.status(201).json(newPost)
 }
 
-//put --> /:id
+
 const updatePost = async(req, res) => {
     const id = req.params.id
     const {texto} = req.body
@@ -70,13 +67,13 @@ const updatePost = async(req, res) => {
     res.status(200).json(post)
 }
 
-//delete --> /:id
+
 const deletePost = async(req, res) => {
     const id = req.params.id
     const post = await Post.findByPk(id)
 
     const removed = await post.destroy()
-    res.status(200).json(removed) //lo que eliminó. O: res.status(204).send() y no muestra nada
+    res.status(200).json(removed) 
 }
 
 
