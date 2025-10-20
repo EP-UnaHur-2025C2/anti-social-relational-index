@@ -18,9 +18,6 @@ const validUser =async (req, res, next) =>{
 
 const validUsername = async (req, res, next) => {
     const { username } = req.body;
-    if (!username) {
-        return res.status(400).json({ message: "El username es requerido" });
-    }
     if(!await User.findOne({ where: { username }})){
         next()
     }
@@ -45,9 +42,6 @@ const validUsernamePatch = async (req, res, next) => {
 
 const validEmail = async (req, res, next) => {
     const { email } = req.body;
-    if (!email) {
-        return res.status(400).json({ message: "El email es requerido" });
-    }
     if(!await User.findOne({ where: { email }})){
         next()
     }

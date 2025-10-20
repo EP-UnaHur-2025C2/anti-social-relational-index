@@ -25,13 +25,6 @@ const schema= joi.object({
     })
 });
 
-const emailSchema = joi.object({
-    email:joi.string().required().email().messages({
-    "any.required": "El email es obligatorio",
-    "string.email": "Debe ser un email válido",
-    "string.empty": "El email no puede estar vacío"  
-    })
-});
 
 const schemaPatch = joi.object({
     username : joi.string().min(4).max(30).messages({
@@ -70,4 +63,4 @@ const schemaLogin = joi.object({
     })
 });
 
-module.exports={schema, emailSchema, schemaPatch, schemaLogin};
+module.exports={schema, schemaPatch, schemaLogin};
