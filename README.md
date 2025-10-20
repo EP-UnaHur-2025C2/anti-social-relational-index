@@ -149,7 +149,14 @@ UnaHur Anti-Social Net es una red social que permite a los usuarios compartir po
 ---
 
 ## Aclaraciones
-- La cantidad de meses de visualización de los comentarios, el motor de base de datos y el puerto del servidor se configuran mediante variables de entorno.
+- La cantidad de meses de visualización de los comentarios, el motor de base de datos, el secret key de jwt y el puerto del servidor se configuran mediante variables de entorno en un archivo `.env` con los siguientes nombres y sus valores por defecto (Es decir sin tenerlas definidas en el archivo, la API se ejecuta con estos valores): 
+
+```
+COMMENT_VISIBLE_MONTHS=6
+DB_ENGINE=sequelize
+JWT_SECRET_KEY=supersecretkey123
+PORT=3001
+```
 - La entidad PostImagen no posee un CRUD independiente, ya que sus operaciones son gestionadas a través de la entidad Post, de la que depende directamente.
 - La documentación de la API se generó automáticamente utilizando Swagger UI y Swagger Autogen, y luego fue convertida manualmente al formato YAML.
 - El PATCH de Post solo permite modificar el texto del posteo, no imágenes ni tags, ya que la modificación de las mismas dentro del posteo se hace eliminando y agregando. Aunque sí se puede actualizar el nombre de los tags independientemente de los posteos a los que pertenecen.

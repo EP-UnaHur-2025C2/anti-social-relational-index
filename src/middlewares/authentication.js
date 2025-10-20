@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { User } = require('../db/models');
 
-const secret_key = process.env.JWT_SECRET_KEY;
+const secret_key = (process.env.JWT_SECRET_KEY || "supersecretkey123");
 
 const authenticateToken = async (req, res, next) => {
 
