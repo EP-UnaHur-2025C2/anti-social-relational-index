@@ -2,10 +2,10 @@ const joi=require('joi');
 const user = require('../db/models/user');
 
 const schema= joi.object({
-    username : joi.string().min(4).max(30).required().messages({
+    username : joi.string().min(3).max(30).required().messages({
         "any.required": "El username es obligatorio",
         "string.empty": "El username no puede estar vacío",
-        "string.min": "El username debe tener al menos 4 caracteres",
+        "string.min": "El username debe tener al menos 3 caracteres",
         "string.max" : "El username debe contener como maximo {#limit} de caracteres"
     }),
 
@@ -27,9 +27,9 @@ const schema= joi.object({
 
 
 const schemaPatch = joi.object({
-    username : joi.string().min(4).max(30).messages({
+    username : joi.string().min(3).max(30).messages({
         "string.empty": "El username no puede estar vacío",
-        "string.min": "El username debe tener al menos 4 caracteres",
+        "string.min": "El username debe tener al menos 3 caracteres",
         "string.max" : "El username debe contener como maximo {#limit} de caracteres"
     }),
 
@@ -48,10 +48,10 @@ const schemaPatch = joi.object({
 })
 
 const schemaLogin = joi.object({
-    username : joi.string().min(4).max(30).required().messages({
+    username : joi.string().min(3).max(30).required().messages({
         "any.required": "El username es obligatorio",
         "string.empty": "El username no puede estar vacío",
-        "string.min": "El username debe tener al menos 4 caracteres",
+        "string.min": "El username debe tener al menos 3 caracteres",
         "string.max" : "El username debe contener como maximo {#limit} de caracteres"
     }),
 
