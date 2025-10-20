@@ -33,7 +33,7 @@ const validUsernamePatch = async (req, res, next) => {
     const { username } = req.body;
     
     if(!username){
-        next()
+        return next()
     }
 
     if(username.includes(" ")) {
@@ -62,7 +62,7 @@ const validEmailPatch = async (req, res, next) => {
     const { email } = req.body;
 
     if(!email){
-        next()
+        return next()
     }
     else if(!await User.findOne({ where: { email }})){
         next()
@@ -75,6 +75,18 @@ const validEmailPatch = async (req, res, next) => {
 
 const validPassword = async (req, res, next) => {
     const { password } = req.body;
+    if(password.includes(" ")) {
+        return res.status(400).json({ message: "La contraseña no puede contener espacios" });
+    }
+    next()
+}
+
+const validPasswordPatch = async (req, res, next) => {
+    const { password } = req.body;
+
+    if (!password) {
+        return next()
+    }
     if(password.includes(" ")) {
         return res.status(400).json({ message: "La contraseña no puede contener espacios" });
     }
@@ -134,4 +146,4 @@ const validAuthUser = async (req, res, next) => {
     next();
 }
 
-module.exports = {validUser,validUsername, validEmail ,validationSchema, validationEmailSchema, validUserByParam, validUsernamePatch, validEmailPatch, validFollowUsers, validAuthUser, validPassword};   
+module.exports = {validUser,validUsername, validEmail ,validationSchema, validationEmailSchema, validUserByParam, validUsernamePatch, validEmailPatch, validFollowUsers, validAuthUser, validPassword , validPasswordPatch};   

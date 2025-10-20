@@ -1,7 +1,7 @@
 const {Router} = require('express');
 const router = Router();
 const userControllers = require('../controllers/user.controller');
-const {validUser, validationSchema, validUserByParam, validUsernamePatch, validEmailPatch, validFollowUsers, validAuthUser, validPassword} = require ('../middlewares/user.middleware')
+const {validUser, validationSchema, validUserByParam, validUsernamePatch, validEmailPatch, validFollowUsers, validAuthUser, validPasswordPatch} = require ('../middlewares/user.middleware')
 const {invalidId} = require ('../middlewares/generic.middleware');
 
 
@@ -12,7 +12,7 @@ const {schemaPatch} = require('../schemas/user.schema')
 //CRUD
 router.get("/", userControllers.getUsers)  
 router.get('/:id',invalidId, validUser, userControllers.getUserById);
-router.patch('/:id',invalidId, validUser, validAuthUser, validUsernamePatch, validEmailPatch, validPassword, validationSchema(schemaPatch), userControllers.updateUser); 
+router.patch('/:id',invalidId, validUser, validAuthUser, validUsernamePatch, validEmailPatch, validPasswordPatch, validationSchema(schemaPatch), userControllers.updateUser); 
 router.delete('/:id',invalidId, validUser, validAuthUser, userControllers.deleteUser);
 
 //Relaciones
