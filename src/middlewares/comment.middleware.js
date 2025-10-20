@@ -21,5 +21,14 @@ const validCommentBody = (schema) => {
 }
 
 
+const validCommentByUser = async (req, res, next) => {
+    const comment = await Comment.findByPk(req.params.id);
 
-module.exports = { validComment, validCommentBody};
+    if (comment.usuarioId !== req.user.id) {
+        return res.status(403).json({ message: 'No autorizado' });
+    }
+    next();
+}
+
+
+module.exports = { validComment, validCommentBody, validCommentByUser};

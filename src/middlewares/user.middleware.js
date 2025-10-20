@@ -117,4 +117,13 @@ const validFollowUsers = (param1,param2) => {
     }
 }
 
-module.exports = {validUser,validUsername, validEmail ,validationSchema, validationEmailSchema, validUserByParam, validUsernamePatch, validEmailPatch, validFollowUsers};   
+const validAuthUser = async (req, res, next) => {
+    const user = await User.findByPk(req.params.id);
+
+    if (user.id !== req.user.id) {
+        return res.status(403).json({ message: 'No autorizado' });
+    }
+    next();
+}
+
+module.exports = {validUser,validUsername, validEmail ,validationSchema, validationEmailSchema, validUserByParam, validUsernamePatch, validEmailPatch, validFollowUsers, validAuthUser};   

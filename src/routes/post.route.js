@@ -16,17 +16,17 @@ router.get("/", postController.getPosts);
 router.get('/:id',invalidId, validPost, postController.getPostById); 
 router.post('/', validPostBody(creationSchema), postController.createPost); 
 router.patch('/:id',invalidId,validPost, validPostByUser, validPostBody(contenidoSchema), postController.updatePost); 
-router.delete('/:id',invalidId, validPost, postController.deletePost);
+router.delete('/:id',invalidId, validPost, validPostByUser, postController.deletePost);
 
 //Imagenes
 router.get('/:id/imagenes', invalidId, validPost, postController.getImagesByPost)
 router.post('/:id/imagenes',invalidId, validPost, validPostImagesBody(urlSchema), validUrl, postController.addNewImageToPost); 
-router.delete('/:id/imagenes/:idImagen',invalidId, validPost, validPostImagen ,postController.deleteImageFromPost);
+router.delete('/:id/imagenes/:idImagen',invalidId, validPost, validPostByUser, validPostImagen ,postController.deleteImageFromPost);
 
 //Tags
 router.get('/:id/tags', invalidId, validPost, postController.getTagsByPost)
 router.post('/:id/tag',invalidId, validPost, validPostBody(tagSchema), postController.addTagToPost);
-router.delete('/:id/tag/:idTag', invalidId, validPost, validTagDelete, postController.deleteTagFromPost);
+router.delete('/:id/tag/:idTag', invalidId, validPost, validPostByUser, validTagDelete, postController.deleteTagFromPost);
 
 //Filtros
 router.get("/tag/:id", validTag, postController.getPostsByTag);

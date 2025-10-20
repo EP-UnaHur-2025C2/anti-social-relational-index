@@ -153,3 +153,5 @@ UnaHur Anti-Social Net es una red social que permite a los usuarios compartir po
 - La entidad PostImagen no posee un CRUD independiente, ya que sus operaciones son gestionadas a través de la entidad Post, de la que depende directamente.
 - La documentación de la API se generó automáticamente utilizando Swagger UI y Swagger Autogen, y luego fue convertida manualmente al formato YAML.
 - El PATCH de Post solo permite modificar el texto del posteo, no imágenes ni tags, ya que la modificación de las mismas dentro del posteo se hace eliminando y agregando. Aunque sí se puede actualizar el nombre de los tags independientemente de los posteos a los que pertenecen.
+- Para probar desde swagger hay que registrarse y hacer el login, del cual se obtiene un token que se debe pegar en la parte que dice "Authorize" arriba a la derecha, de la siguiente manera: Bearer *token*.
+- Todas las acciones se hacen desde un mismo usuario (postear, eliminar, hacer patch, etc). Por ejemplo, si inicio sesión con un usuario, no puedo eliminar a otro existente (error: no autorizado).
