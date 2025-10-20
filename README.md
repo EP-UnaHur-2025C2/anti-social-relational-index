@@ -19,7 +19,11 @@ UnaHur Anti-Social Net es una red social que permite a los usuarios compartir po
 
 - Node.js + Express
 - Sequelize ORM + SQLite
-- Swagger para documentación
+- dotenv para las variables de entorno
+- Joi para el armado de schemas
+- JsonWebToken para el token de la autenticación
+- bcrypt para hashear las contraseñas y guardarlas así
+- Swagger para documentación (lo cual implica la extensión de YAML)
 - Postman (colecciones de prueba)
 
 - Para su correcta instalacion al clonar el repositorio, ejecutar npm i en la terminal.
