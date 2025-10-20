@@ -80,13 +80,13 @@ const deletePost = async(req, res) => {
 
 
 
-// put -->/:id/imgs (o post)
+
 const addNewImageToPost = async(req, res) => {
     const idPost = req.params.id
-    const url = req.body.url //se manda solo la url por post
+    const url = req.body.url 
     const post = await Post.findByPk(idPost)
 
-    const [img, creada] = await PostImagen.findOrCreate({ //si la imagen ya estaba asociada a un post, se reasocia al que se manda por parametro (?)
+    const [img, creada] = await PostImagen.findOrCreate({ 
         where: {url}, 
         defaults: {url, postId: post.id}
     })
@@ -95,10 +95,10 @@ const addNewImageToPost = async(req, res) => {
 
     const imagenes = await post.getImagenes()
 
-    res.status(creada ? 201 : 200).json(imagenes) //trae array con todas las imagenes + la nueva (supuestamente)
+    res.status(creada ? 201 : 200).json(imagenes) 
 }
 
-//delete --> /:id/imgs/:idImage
+
 const deleteImageFromPost = async(req, res) => {
     const idPost = req.params.id
     const idImg = req.params.idImagen
@@ -111,7 +111,7 @@ const deleteImageFromPost = async(req, res) => {
     res.status(200).json(imagenesRestantes)
 }
 
-//get --> /:id/imagenes
+
 const getImagesByPost = async(req, res) => {
     const id = req.params.id
     const post = await Post.findByPk(id)
@@ -123,7 +123,7 @@ const getImagesByPost = async(req, res) => {
 
 
 
-//post --> /:id/tag 
+
 const addTagToPost = async(req, res) => {
     const idPost = req.params.id
     const {nombre} = req.body
@@ -137,7 +137,7 @@ const addTagToPost = async(req, res) => {
     res.status(creado ? 201 : 200).json(tags)
 }
 
-// delete --> /:id/tags/:idTag
+
 const deleteTagFromPost = async(req, res) => {
     const idPost = req.params.id
     const idTag = req.params.idTag
@@ -147,10 +147,10 @@ const deleteTagFromPost = async(req, res) => {
     await post.removeTag(tag)
 
     const postWithTags = await post.getTags({attributes: ["nombre"]})
-    res.status(200).json(postWithTags) //o solo devolver el tag eliminado?
+    res.status(200).json(postWithTags) 
 }
 
-// get --> /tag/:id. Solo muestra el post sin comentarios + el tag que se busca (si tiene mas tags, no se muestran)
+
 const getPostsByTag = async(req, res) => {
     const idTag = req.params.id
 
@@ -168,7 +168,7 @@ const getPostsByTag = async(req, res) => {
     res.status(200).json(posts)
 }
 
-//get --> /:id/tags
+
 const getTagsByPost = async(req, res) => {
     const id = req.params.id
     const post = await Post.findByPk(id)
@@ -180,7 +180,7 @@ const getTagsByPost = async(req, res) => {
 
 
 
-// get --> /:id/comments
+
 const getCommentsByPost = async(req, res) => {
     const id = req.params.id
     const post = await Post.findByPk(id)
@@ -195,11 +195,11 @@ const getCommentsByPost = async(req, res) => {
     res.status(200).json(comentarios)
 }
 
-//get --> /lazy/:id //muestra los primeros 10 comentarios de un post. Puede ser dinámico con la ruta
+
 const getLatestTenCommentsById = async(req, res) => {
     const id = req.params.id
     let {count, rows} = await Comment.findAndCountAll({
-        where: {postId: id}, //solo muestra los visibles
+        where: {postId: id}, 
         limit: 10,
         offset: 0,
         order: [["createdAt", "DESC"]],
@@ -217,7 +217,7 @@ const getLatestTenCommentsById = async(req, res) => {
 
 
 
-// get --> /:id/feed
+
 const getPostsOfFollowedUsers = async(req, res) => {
     const id = req.params.id
     const user = await User.findByPk(id)
@@ -239,11 +239,10 @@ const getPostsOfFollowedUsers = async(req, res) => {
 
 const findOrCreateImages = async(imagenes, postId, transaction = null) => {
     const imgs = []
-    // hacer secuencial para evitar condiciones de carrera sobre UNIQUE
+
     for (const img of imagenes) {
         let found = await PostImagen.findOne({ where: { url: { [Op.eq]: img.url } }, transaction })
         if (!found) {
-            // incluir postId en la creación para respetar posibles NOT NULL de la FK
             found = await PostImagen.create({ url: img.url, postId }, { transaction })
         }
         imgs.push(found)
@@ -265,9 +264,9 @@ const findOrCreateTags = async(tags, postId, transaction = null) => {
 
 
 
-//post --> /create-image
+
 const createPostWithImages = async(req, res) => {
-    const {texto, imagenes} = req.body // imagenes: array
+    const {texto, imagenes} = req.body 
     const data = {texto, usuarioId: req.user.id}
 
     const transaction = await Post.sequelize.transaction()
@@ -291,7 +290,7 @@ const createPostWithImages = async(req, res) => {
 
 }
 
-// post --> /create-tag
+
 const createPostWithTags = async(req, res) => {
     const {texto, tags} = req.body
     const data = {texto, usuarioId: req.user.id}
@@ -315,7 +314,7 @@ const createPostWithTags = async(req, res) => {
     res.status(201).json(postWithTags)
 }
 
-//post --> /create-completo
+
 const createPostCompleto = async(req, res) => {
     const {texto, imagenes, tags} = req.body
     const data = {texto, usuarioId:req.user.id}

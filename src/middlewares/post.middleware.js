@@ -9,7 +9,7 @@ const validPost = async (req, res, next) => {
     next();
 }
 
-//*Asumiendo que un usuario no puede modificar/eliminar posts de otros usuarios
+
 const validPostByUser = async (req, res, next) => {
     const post = await Post.findByPk(req.params.id);
 
