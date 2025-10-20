@@ -35,6 +35,11 @@ const validUsernamePatch = async (req, res, next) => {
     if(!username){
         next()
     }
+
+    if(username.includes(" ")) {
+        return res.status(400).json({ message: "El username no puede contener espacios" });
+    }
+    
     else if(!await User.findOne({ where: { username }})){
         next()
     }
