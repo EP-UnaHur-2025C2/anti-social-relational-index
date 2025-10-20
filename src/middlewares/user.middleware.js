@@ -35,6 +35,11 @@ const validUsernamePatch = async (req, res, next) => {
     if(!username){
         next()
     }
+
+    if(username.includes(" ")) {
+        return res.status(400).json({ message: "El username no puede contener espacios" });
+    }
+    
     else if(!await User.findOne({ where: { username }})){
         next()
     }
@@ -70,9 +75,6 @@ const validEmailPatch = async (req, res, next) => {
 
 const validPassword = async (req, res, next) => {
     const { password } = req.body;
-    if (!password.trim()) {
-        return res.status(400).json({ message: "La password es requerida" });
-    }
     if(password.includes(" ")) {
         return res.status(400).json({ message: "La contraseña no puede contener espacios" });
     }
