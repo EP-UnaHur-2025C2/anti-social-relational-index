@@ -1,4 +1,4 @@
-const {Tag} = require("../db/models")
+const {Tag} = require("../db")
 
 
 

@@ -1,4 +1,4 @@
-const {User, PostImagen, Post, Tag, Comment} = require('../db/models');
+const {User, PostImagen, Post, Tag, Comment} = require('../db');
 const bcrypt = require('bcrypt');
 
 

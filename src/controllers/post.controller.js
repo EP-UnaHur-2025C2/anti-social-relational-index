@@ -1,5 +1,5 @@
 const { where, or } = require("sequelize")
-const {Post, PostImagen, Tag, Comment, User} = require("../db/models")
+const {Post, PostImagen, Tag, Comment, User} = require("../db")
 const { Op } = require("sequelize")
 
 

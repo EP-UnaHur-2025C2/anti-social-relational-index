@@ -1,4 +1,4 @@
-const {Comment, User, Post} = require("../db/models")
+const {Comment, User, Post} = require("../db")
 
 
 const getComments = async(req, res) => { 

@@ -1,6 +1,6 @@
 const generateToken = require('../utils/token-generator');
 const bcrypt = require('bcrypt');
-const { User } = require('../db/models');
+const { User } = require('../db');
 
 const login = async (req, res) => {
     const { username, password } = req.body;
@@ -20,3 +20,4 @@ const login = async (req, res) => {
 };
 
 module.exports = { login };
+
