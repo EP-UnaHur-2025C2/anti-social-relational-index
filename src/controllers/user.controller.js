@@ -3,6 +3,16 @@ const bcrypt = require('bcrypt');
 
 
 const getUsers = async(req, res) => {
+  const { username } = req.query;
+
+  // If a username query param is provided, return that user (safe) so the front can
+  // resolve a username -> id without fetching all users.
+  if (username) {
+    const user = await User.findOne({ where: { username }, attributes: { exclude: ['password'] } });
+    if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+    return res.status(200).json(user);
+  }
+
   const data = await User.findAll({
     attributes: {exclude: ["password"]}
   })
