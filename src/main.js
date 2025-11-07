@@ -23,7 +23,7 @@ app.use(express.json())
 const cors = require('cors')
 const allowedOrigins = [
   'http://localhost:5173',       // tu entorno de desarrollo local
-  'https://tp2-ciu-grupo-4-antisocial.vercel.app/'    // tu app desplegada en Vercel
+  'https://tp2-ciu-grupo-4-antisocial.vercel.app'    // tu app desplegada en Vercel
 ];
 
 app.use(cors({
