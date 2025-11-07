@@ -21,7 +21,14 @@ const PORT = process.env.PORT || 3001
 app.use(express.json())
 
 const cors = require('cors')
-app.use(cors({ origin: 'http://localhost:5173'}))
+const allowedOrigins = [
+  'http://localhost:5173',       // tu entorno de desarrollo local
+  'https://tp2-ciu-grupo-4-antisocial.vercel.app/'    // tu app desplegada en Vercel
+];
+
+app.use(cors({
+  origin: allowedOrigins
+}));
 
 //rutas:
 app.use('/auth', authRoute);
@@ -37,5 +44,5 @@ app.listen(PORT, async(error) => {
         process.exit(1)
     }
     console.log(`App iniciada correctamente en el puerto ${PORT}`)
-    await sequelize.sync({force: process.env.NODE_ENV !== 'production'})
+    //await sequelize.sync({force: process.env.NODE_ENV !== 'production'})
 })
